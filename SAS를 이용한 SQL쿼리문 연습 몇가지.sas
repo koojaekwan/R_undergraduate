@@ -1,32 +1,32 @@
 proc sql;
 create table work.discount (destination char(3), begindate num format=date9., enddate num format=date9., discount num);
 
-###setÀ» ÀÌ¿ëÇÏ¿© ÇàÃß°¡ ÇÏ±â###
+###setì„ ì´ìš©í•˜ì—¬ í–‰ì¶”ê°€ í•˜ê¸°###
 proc sql;
 insert into work.discount
 set destination='koo', begindate='01mar2000'd, enddate='05mar2000'd, discount=0.33
 set destination='kim', begindate='03mar2000'd, enddate='10mar2000'd, discount=0.15;
 
 
-###¸ğµç ÄÃ·³¿¡ ´ëÇØ¼­ Çà Ãß°¡ÇÏ±â### - ÄÃ·³À» ¸í½ÃÇØÁàµµ µÇ°í ¾ÈÇØÁàµµ µÊ
+###ëª¨ë“  ì»¬ëŸ¼ì— ëŒ€í•´ì„œ í–‰ ì¶”ê°€í•˜ê¸°### - ì»¬ëŸ¼ì„ ëª…ì‹œí•´ì¤˜ë„ ë˜ê³  ì•ˆí•´ì¤˜ë„ ë¨
 proc sql;
 insert into work.discount
 values('koo','01mar2000'd,'05mar2000'd,0.33)
 values('kim','03mar2000'd,'01mar2000'd,0.15);
 
-###ÀÏºÎ ÄÃ·³À» ÁöÁ¤ÇÏ¿© Çà Ãß°¡ÇÏ±â###
+###ì¼ë¶€ ì»¬ëŸ¼ì„ ì§€ì •í•˜ì—¬ í–‰ ì¶”ê°€í•˜ê¸°###
 proc sql;
 insert into work.discount
 (destination,discount)
 values('koo',0.33);
 
 -------------------------------------------
-###º¹»çÇØ¿À±â###
+###ë³µì‚¬í•´ì˜¤ê¸°###
 proc sql;
 create table work.mechanicslevel3_new as
 select * from sasuser.mechanicslevel3;
 
-###3Ç¥¿¡¼­ 2Ç¥ÀÇ empid°¡ 1653ÀÎ°ÍÀ» Ãß°¡ÇÏ±â###
+###3í‘œì—ì„œ 2í‘œì˜ empidê°€ 1653ì¸ê²ƒì„ ì¶”ê°€í•˜ê¸°###
 proc sql;
 insert into work.mechanicslevel3_new
 select empid, jobcode,salary
@@ -34,26 +34,26 @@ from sasuser.mechanicslevel2
 where empid='1653';
 
 --------------------------------------------
-### Á¦¾àÁ¶°ÇÀ» ÄÃ·³ µÚ¿¡ °É¾îÁÖ´Â ¹æ¹ı###
+### ì œì•½ì¡°ê±´ì„ ì»¬ëŸ¼ ë’¤ì— ê±¸ì–´ì£¼ëŠ” ë°©ë²•###
 proc sql;
 create table work.employees
 (id char(5) primary key, name char(10), gender char(1) not null check(gender in ('M','F')), hdate date label='hire date');
 
-### Á¦¾àÁ¶°ÇÀ» Å×ÀÌºí »ı¼º µŞºÎºĞ¿¡ Àû¾îÁÖ´Â ¹æ¹ı###
+### ì œì•½ì¡°ê±´ì„ í…Œì´ë¸” ìƒì„± ë’·ë¶€ë¶„ì— ì ì–´ì£¼ëŠ” ë°©ë²•###
 proc sql;
 create table work.discount3
 (destination char(3), begindate num format=date9., enddate num format=date9., discount num,
 constraint check_discount check(discount <=0.5), constraint notnull_dest not null(destination));
 
 -------------------------------------------
-### undo_policy=none Àº ¼º°øÇÑ ÇàÀº ³²¾ÆÀÖ´Â°Í
+### undo_policy=none ì€ ì„±ê³µí•œ í–‰ì€ ë‚¨ì•„ìˆëŠ”ê²ƒ
 proc sql undo_policy=none;
 
-### undo_policy=required ´Â ¼º°øÇß´ø °Íµµ ´Ù Áö¿ö¼­ ¿ø·¡´ë·Î Å×ÀÌºíÀ» µ¹·Á³õ´Â °Í
+### undo_policy=required ëŠ” ì„±ê³µí–ˆë˜ ê²ƒë„ ë‹¤ ì§€ì›Œì„œ ì›ë˜ëŒ€ë¡œ í…Œì´ë¸”ì„ ëŒë ¤ë†“ëŠ” ê²ƒ
 proc sql undo_policy=required;
 
 -------------------------------------------
-### desctibe table constraint ·Î Á¦¾àÁ¶°ÇÀ» º¸ÀÏ ¼ö ÀÖ´Ù
+### desctibe table constraint ë¡œ ì œì•½ì¡°ê±´ì„ ë³´ì¼ ìˆ˜ ìˆë‹¤
 proc sql;
 describe table constraint work.discount3;
 
@@ -75,7 +75,7 @@ case when substr(jobcode,3,1)='1' then 1.05
 		else 1.08
 end;
 
-###else¸¦ »ı·«ÇÏ¸é ´Ù¸¥ °æ¿ì´Â ¹Ì½Ì°ªÀ» °¡Áö°Ô µÈ´Ù###
+###elseë¥¼ ìƒëµí•˜ë©´ ë‹¤ë¥¸ ê²½ìš°ëŠ” ë¯¸ì‹±ê°’ì„ ê°€ì§€ê²Œ ëœë‹¤###
 
 
 --------------------------------------------
@@ -84,7 +84,7 @@ create table work.frequentflyer2 as
 select ffid, milestraveled, pointsearned, pointsused
 from sasuser.frequentflyers;
 
-### ÇàÀ» Áö¿ì´Â ¹æ¹ı
+### í–‰ì„ ì§€ìš°ëŠ” ë°©ë²•
 proc sql;
 delete from work.frequentflyer2
 where pointsearned-pointsused<=0;
