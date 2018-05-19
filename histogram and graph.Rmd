@@ -1,0 +1,50 @@
+---
+title: "histogram and graph"
+output: html_notebook
+---
+```{r}
+cars<-cars
+```
+
+```{r}
+#칸들의 갯수를 두번째 인자에서 설정하여 분포모양을 더 잘 설명할 수 있게 함. 
+par(mfrow=c(1,2))   #한 페이지에 여러개 그래프 그리기
+                    #열 순으로 채우려면 par(mfcol=c(3,3))
+hist(cars$speed,20,main="histogram of speed",xlab="speed")
+hist(cars$speed,main="histogram of speed",xlab="speed")
+```
+```{r}
+#speed의 histogram, 확률척도를 사용,  prob=T : y축에 확률표시
+hist(cars$speed,main="histogram of speed",xlab="speed",prob=T)  
+lines(density(cars$speed))   #추정된 밀도를 그래프로 그림
+```
+```{r}
+#정규분포를 따르는 난수들의 밀도그림과 히스토그램 함께 표현.
+koo<-c()
+for(i in 1:1000000){
+  koo[i]<-rnorm(1)
+}
+hist(koo,prob=T)
+lines(density(rnorm(1000000, 0, 1)))
+```
+
+```{r}
+#cars안의 speed, dist의 산점도.
+plot(cars,xlab="speed of cars",ylab="distance")
+
+plot(cars,ann=F)  #x,y축 제목을 지정하지 않음.
+title(main="title!",xlab="speed of cars",ylab="distance")
+```
+
+```{r}
+plot(cars$speed,cars$dist,type="n")   # n means nothing  : 그래픽 프레임 초기설정
+grid()   #격자 추가
+points(cars$speed,cars$dist)
+```
+```{r}
+temp<-data.frame(march=15,april=18,may=23,june=28,july=33)
+color<-c("blue","green","yellow","orange","red")
+barplot(as.matrix(temp)[1,],names.arg = c("march","april","may","june","july"),
+        col=color,border=NA,las=1)  #막대에 label 부여, 막대별 색상지정, y축범례돌림,                                          테두리 제거
+title(xlab="월",ylab="온도")
+```
