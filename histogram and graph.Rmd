@@ -7,19 +7,19 @@ cars<-cars
 ```
 
 ```{r}
-#Ä­µéÀÇ °¹¼ö¸¦ µÎ¹øÂ° ÀÎÀÚ¿¡¼­ ¼³Á¤ÇÏ¿© ºÐÆ÷¸ð¾çÀ» ´õ Àß ¼³¸íÇÒ ¼ö ÀÖ°Ô ÇÔ. 
-par(mfrow=c(1,2))   #ÇÑ ÆäÀÌÁö¿¡ ¿©·¯°³ ±×·¡ÇÁ ±×¸®±â
-                    #¿­ ¼øÀ¸·Î Ã¤¿ì·Á¸é par(mfcol=c(3,3))
+#ì¹¸ë“¤ì˜ ê°¯ìˆ˜ë¥¼ ë‘ë²ˆì§¸ ì¸ìžì—ì„œ ì„¤ì •í•˜ì—¬ ë¶„í¬ëª¨ì–‘ì„ ë” ìž˜ ì„¤ëª…í•  ìˆ˜ ìžˆê²Œ í•¨. 
+par(mfrow=c(1,2))   #í•œ íŽ˜ì´ì§€ì— ì—¬ëŸ¬ê°œ ê·¸ëž˜í”„ ê·¸ë¦¬ê¸°
+                    #ì—´ ìˆœìœ¼ë¡œ ì±„ìš°ë ¤ë©´ par(mfcol=c(3,3))
 hist(cars$speed,20,main="histogram of speed",xlab="speed")
 hist(cars$speed,main="histogram of speed",xlab="speed")
 ```
 ```{r}
-#speedÀÇ histogram, È®·üÃ´µµ¸¦ »ç¿ë,  prob=T : yÃà¿¡ È®·üÇ¥½Ã
+#speedì˜ histogram, í™•ë¥ ì²™ë„ë¥¼ ì‚¬ìš©,  prob=T : yì¶•ì— í™•ë¥ í‘œì‹œ
 hist(cars$speed,main="histogram of speed",xlab="speed",prob=T)  
-lines(density(cars$speed))   #ÃßÁ¤µÈ ¹Ðµµ¸¦ ±×·¡ÇÁ·Î ±×¸²
+lines(density(cars$speed))   #ì¶”ì •ëœ ë°€ë„ë¥¼ ê·¸ëž˜í”„ë¡œ ê·¸ë¦¼
 ```
 ```{r}
-#Á¤±ÔºÐÆ÷¸¦ µû¸£´Â ³­¼öµéÀÇ ¹Ðµµ±×¸²°ú È÷½ºÅä±×·¥ ÇÔ²² Ç¥Çö.
+#ì •ê·œë¶„í¬ë¥¼ ë”°ë¥´ëŠ” ë‚œìˆ˜ë“¤ì˜ ë°€ë„ê·¸ë¦¼ê³¼ ížˆìŠ¤í† ê·¸ëž¨ í•¨ê»˜ í‘œí˜„.
 koo<-c()
 for(i in 1:1000000){
   koo[i]<-rnorm(1)
@@ -29,22 +29,22 @@ lines(density(rnorm(1000000, 0, 1)))
 ```
 
 ```{r}
-#cars¾ÈÀÇ speed, distÀÇ »êÁ¡µµ.
+#carsì•ˆì˜ speed, distì˜ ì‚°ì ë„.
 plot(cars,xlab="speed of cars",ylab="distance")
 
-plot(cars,ann=F)  #x,yÃà Á¦¸ñÀ» ÁöÁ¤ÇÏÁö ¾ÊÀ½.
+plot(cars,ann=F)  #x,yì¶• ì œëª©ì„ ì§€ì •í•˜ì§€ ì•ŠìŒ.
 title(main="title!",xlab="speed of cars",ylab="distance")
 ```
 
 ```{r}
-plot(cars$speed,cars$dist,type="n")   # n means nothing  : ±×·¡ÇÈ ÇÁ·¹ÀÓ ÃÊ±â¼³Á¤
-grid()   #°ÝÀÚ Ãß°¡
+plot(cars$speed,cars$dist,type="n")   # n means nothing  : ê·¸ëž˜í”½ í”„ë ˆìž„ ì´ˆê¸°ì„¤ì •
+grid()   #ê²©ìž ì¶”ê°€
 points(cars$speed,cars$dist)
 ```
 ```{r}
 temp<-data.frame(march=15,april=18,may=23,june=28,july=33)
 color<-c("blue","green","yellow","orange","red")
 barplot(as.matrix(temp)[1,],names.arg = c("march","april","may","june","july"),
-        col=color,border=NA,las=1)  #¸·´ë¿¡ label ºÎ¿©, ¸·´ëº° »ö»óÁöÁ¤, yÃà¹ü·Êµ¹¸²,                                          Å×µÎ¸® Á¦°Å
-title(xlab="¿ù",ylab="¿Âµµ")
+        col=color,border=NA,las=1)  #ë§‰ëŒ€ì— label ë¶€ì—¬, ë§‰ëŒ€ë³„ ìƒ‰ìƒì§€ì •, yì¶•ë²”ë¡€ëŒë¦¼, í…Œë‘ë¦¬ ì œê±°
+title(xlab="ì›”",ylab="ì˜¨ë„")
 ```
