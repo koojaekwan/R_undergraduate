@@ -1,2 +1,2 @@
-# statistics
+# R
 programming
