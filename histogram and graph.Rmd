@@ -42,9 +42,9 @@ grid()   #격자 추가
 points(cars$speed,cars$dist)
 ```
 ```{r}
-temp<-data.frame(march=15,april=18,may=23,june=28,july=33)
+temp<-c(march=15,april=18,may=23,june=28,july=33)
 color<-c("blue","green","yellow","orange","red")
-barplot(as.matrix(temp)[1,],names.arg = c("march","april","may","june","july"),
+barplot(temp,names.arg = c("march","april","may","june","july"),
         col=color,border=NA,las=1)  #막대에 label 부여, 막대별 색상지정, y축범례돌림, 테두리 제거
 title(xlab="월",ylab="온도")
 ```
