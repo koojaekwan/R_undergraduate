@@ -25,7 +25,13 @@ f <- function(x) {
 ```
 ```{r}
 Fx<-function(x){
-  return(simpson_n(f,0,x))
+  if(0 <= x & x <= 1) {
+    return(simpson_n(f,0,x))
+  }else if(x<0){
+    return(0)
+  }else{
+    return(1)
+  }
 }
 x<-seq(-1,2,0.01)
 
@@ -49,8 +55,10 @@ for(i in 1:10000){
 hist(koo,probability = T,xlab="x",main="Histogram of x")
 lines(seq(0,1,0.01),sapply(seq(0,1,0.01),f))
 ```
-
-
+```{r}
+hist(koo,probability = T,xlab="x",main="Histogram of x")
+lines(density(koo))
+```
 
 
 
