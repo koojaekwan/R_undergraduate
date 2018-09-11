@@ -1,8 +1,6 @@
 ---
 title: "R for data science <3. data visualisation>"
-output:
-  html_document:
-    df_print: paged
+output: github_document
 ---
 
 That one line of code loads the core tidyverse; packages which you will use in almost every data analysis. It also tells you which functions from the tidyverse conflict with functions in base R (or from other packages you might have loaded).
