@@ -13,9 +13,7 @@ output:
     keep_md: true
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=T, fig.align = "center", message=F, warning=F, fig.height = 8, cache=T, dpi = 300, dev = "png")
-```
+
 
 
 ##1.1 System
@@ -125,11 +123,15 @@ $$
 두 시스템은 구성요소 1,2,3번째가 각 두개씩 사용되었다.  
 두 그림은 단순히 배치만 다르게 보인다. 그래서 어느쪽 시스템을 사용해야 하는지 신뢰도를 계산하여 판단해야 한다.  
 
-```{r, out.width='100%', fig.align='center'}
+
+```r
 knitr::include_graphics('https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/master/Computerized_Statistics/Chapter1/1.1system.PNG')
 ```
 
-```{r}
+<img src="https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/master/Computerized_Statistics/Chapter1/1.1system.PNG" width="100%" style="display: block; margin: auto;" />
+
+
+```r
 p<-seq(0,1,0.001)
 h1<-(1-(1-p)^2)*(1-(1-(1-(1-p)^2))^2)
 h2<-1-(1-p*(1-(1-p)^2))^2
@@ -138,7 +140,13 @@ h.dif<-h1-h2
 summary(h.dif)
 ```
 
-```{r}
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## 0.00000 0.01092 0.04970 0.05233 0.09299 0.11160
+```
+
+
+```r
 result<-cbind(p,h1,h2,h.dif)
 
 par(mfrow=c(1,2))
@@ -148,7 +156,9 @@ lines(p,h2)
 text(0.4,0.3,'h2')
 
 plot(p,h.dif, type='l', ylim = c(0,0.15),ylab='h1-h2')
-```  
+```
+
+<img src="chapter1.1_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
 시뮬레이션을 하니 h1이 신뢰도가 더 높아 보인다.  
 신뢰도의 차이는 'p= 0.3~0.4'에서 차이가 많이 나는 것 처럼 보인다.
 
