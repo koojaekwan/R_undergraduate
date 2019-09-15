@@ -154,7 +154,7 @@ text(0.4,0.3,'h2')
 plot(p,h.dif, type='l', ylim = c(0,0.15),ylab='h1-h2')
 ```
 
-<img src="Chapter-1.1_files/figure-markdown_github/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /> 시뮬레이션을 하니 h1이 신뢰도가 더 높아 보인다.
+<img src="Chapter-1_files/figure-markdown_github/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /> 시뮬레이션을 하니 h1이 신뢰도가 더 높아 보인다.
 신뢰도의 차이는 `p : 0.3~0.4`에서 차이가 많이 나는 것 처럼 보인다.
 
 ### Model
