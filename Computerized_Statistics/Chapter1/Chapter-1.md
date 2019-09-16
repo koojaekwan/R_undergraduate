@@ -10,7 +10,8 @@ Jae Kwan Koo
     -   [Parallel system](#parallel-system)
     -   [Diamond system](#diamond-system)
     -   [More complexed model](#more-complexed-model)
-    -   [Model](#model)
+-   [1.3 Model](#model)
+    -   [Model](#model-1)
         -   [Condition of good model](#condition-of-good-model)
         -   [Condition of analysis data](#condition-of-analysis-data)
         -   [Model type](#model-type)
@@ -156,6 +157,9 @@ plot(p,h.dif, type='l', ylim = c(0,0.15),ylab='h1-h2')
 
 <img src="Chapter-1_files/figure-markdown_github/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /> 시뮬레이션을 하니 h1이 신뢰도가 더 높아 보인다.
 신뢰도의 차이는 `p : 0.3~0.4`에서 차이가 많이 나는 것 처럼 보인다.
+
+1.3 Model
+---------
 
 ### Model
 
