@@ -25,6 +25,9 @@ knitr::opts_chunk$set(echo=T, fig.align = "center", message=F, warning=F, fig.he
 0과 1사이 균일분포로부터 하나의 값을 뽑아내야 한다. 어떻게 0과 1사이 값을 찾아낼까?  
 여러번 뽑아내면 똑같은 확률을 가지게 되더라.  
 
+```{r}
+knitr::include_graphics('https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/d2a9dd03991f12a752fe05bcf4948b79ee7f4bff/Computerized_Statistics/Chapter2/chap2-1.PNG')
+```
 #### recursive formula  
 
 뽑았던 공에 번호를 붙이면 영향을 받게 되는가?  
@@ -75,7 +78,43 @@ x1 = 3*x0+1 / 8 로 나눈 나머지를 이야기하게 된다. x2 ,x3 등등 �
 이 예제에서 우리는 모의실험은 4가지 8가지 밖에 나타나지 않는다는 사실을 알 수 있다.  
 즉, 너무 가질 수 있는 값이 적고 여러 이유 때문에 선형합동법은 전통적인 방법이라 잘 사용되지는 않는다.  이 방법은 특정상황에서만 사용가능하므로 요즘 사용빈도는 떨어진다.  
 
-#### conditions  
+```{r}
+knitr::include_graphics('https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/master/Computerized_Statistics/Chapter2/chap2-2.PNG')
+```  
+
+#### Code  
+
+순환 공식을 사용하기 때문에 직전 자료값으로부터 직후 자료값이 영향받는다.  
+즉, 초깃값이 필요하다.
+java, c, python 같은 경우 벡터를 참조할 때 0부터 시작하지만 R 같은 경우 1부터 시작한다는 점에서 R은 프로그래밍 언어로써 약간 차이가 있다.  
+즉, x0는 3이라는 것을 부여한 것이 x[1]<-3이다.  
+간단하게 주기가 4로 나열되는 것을 확인 가능할 것이다.  
+
+한번 돌려보고 결과를 확인해보자.  
+
+```{r}
+m <- 8; a <- 3; c <- 1; x <- 3
+
+for(i in 2:10) x[i] <- (a*x[i-1]+c)%%m
+
+x
+```  
+
+```{r}
+i <- 1; y <- 3
+
+while(1){
+  y[i+1] <- (a*y[i]+c)%%m
+  
+  if(length(y)>=1000) break;
+  i <- i+1 }
+
+y
+```  
+
+
+
+#### Conditions  
 
 * m의 값이 매우 클수록 좋다. 나누는 값이 커질수록 앞의 나머지 값이 다양한 형태로 나타나게 되므로 난수의 형태가 다양해진다.  
 * `완전주기`인 경우 훨씬 더 좋은경우라고 볼 수 있다.
