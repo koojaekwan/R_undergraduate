@@ -4,6 +4,7 @@ Jae Kwan Koo
 
 -   [generation of distribution](#generation-of-distribution)
 -   [Random number generator](#random-number-generator)
+    -   [recursive formula](#recursive-formula)
     -   [conditions of random number generator](#conditions-of-random-number-generator)
 -   [linear conguential](#linear-conguential)
     -   [Code](#code)
@@ -21,7 +22,9 @@ Jae Kwan Koo
 knitr::include_graphics('https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/d2a9dd03991f12a752fe05bcf4948b79ee7f4bff/Computerized_Statistics/Chapter2/chap2-1.PNG')
 ```
 
-<img src="https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/d2a9dd03991f12a752fe05bcf4948b79ee7f4bff/Computerized_Statistics/Chapter2/chap2-1.PNG" style="display: block; margin: auto;" /> \#\#\#\# recursive formula
+<img src="https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/d2a9dd03991f12a752fe05bcf4948b79ee7f4bff/Computerized_Statistics/Chapter2/chap2-1.PNG" style="display: block; margin: auto;" />
+
+#### recursive formula
 
 뽑았던 공에 번호를 붙이면 영향을 받게 되는가?
 함수의 값을 결정짓는데 직전 함수의 값이 직후의 함수값에 영향을 미치는지가 순환공식이다.
@@ -163,8 +166,11 @@ m은 클수록 좋은데 그렇다면 a, c는 어떻게 설정하는게 좋은�
 ### Standard Uniform distribution test
 
 그냥 여러가지의 가설검정들이 있다. 난수들의 독립성 검정을 해야할 필요도 있고, 그래프도 그려볼 수 있다.
-모수적 방법 : 생성한 난수값이 균일분포 따르는지의 적합도 검정.
-콜모고로프-스미르노프는 비모수 방법이다.
+딱히 표준일 필요는 없다. 그냥 균일분포를 따르는지에 대한 검정이다.
+모수적인 방법, 비모수적인 방법, 그래프를 이용한 방법 등 여러가지 방법이 있다.
+
+카이제곱분포를 이용한 적합성 검정 경우 모수적인 방법이다.
+콜모고로프-스미르노프는 비모수 방법이다. 비모수적인 것은 모집단 특성을 나타내고 있는 모수가 포함되어 있지 않는 경우를 말한다. 이것은 경험적인 분포를 사용한다고 한다.
 
 자기상관이 없어야 한다고 이야기했었다. 그래프를 통해 난수사이 독립성 검정 해볼 수 있다.
 만약 1번부터 100까지 난수번호를 알고 있다면, 순차적으로 첫번째 부터 100까지 그래프를 그려볼 수 있다. 만약 특정한 경향성을 가질 때, 난수간의 연관이 있다고 말한다. 즉, 자기상관이 있다고 말한다.
