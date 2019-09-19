@@ -1,6 +1,5 @@
 ---
-title: "Computerized Statistics"
-subtitle: "Chapter 3. Generation of probability distribution"
+title: "Chapter 2.1 Generation of probability distribution"
 author: "Jae Kwan Koo"
 output:
   github_document:

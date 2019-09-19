@@ -1,4 +1,4 @@
-Computerized Statistics
+Chapter 2.1 Generation of probability distribution
 ================
 Jae Kwan Koo
 

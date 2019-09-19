@@ -1,6 +1,5 @@
 ---
-title: "Computerized Statistics"
-subtitle: "Chapter 1. System and Model"
+title: "Chapter 1. System and Model"
 author: "Jae Kwan Koo"
 output:
   github_document:

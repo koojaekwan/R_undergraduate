@@ -1,4 +1,4 @@
-Computerized Statistics
+Chapter 1. System and Model
 ================
 Jae Kwan Koo
 
