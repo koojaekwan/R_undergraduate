@@ -1,6 +1,6 @@
 ---
-title: "First homework for the computerized statistics"
-author: "201711547 구재관"
+title: "hit or miss, 표본평균법, 주표본기법 실습"
+author: "jae kwan koo"
 output:
   github_document:
     toc: yes
