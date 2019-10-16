@@ -43,6 +43,12 @@ hist(sd_uniform(100000),freq=F)  #u~U(0,1)인 난수
 
 <img src="선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
 
+``` r
+knitr::include_graphics('https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/master/Computerized_Statistics/Chapter3/선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-2-1.png')
+```
+
+<img src="https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/master/Computerized_Statistics/Chapter3/선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
+
 runif()함수를 사용하지 않고, 선형합동법을 이용해 표준균일분포를 따르는 난수를 발생시킬 수 있다.
 적당히 큰 m을 설정할 수 있으면 다양한 주기의 난수를 발생시킬 수 있다.
 histogram을 보면 0~1에서 같은 확률을 가지는 것을 확인할 수 있다.
@@ -59,7 +65,13 @@ inverse_method<-function(a,b,n){
 hist(inverse_method(0,10,100000),freq=F)  #x~U(a,b)이므로 다음과 같은 hist생성 가능
 ```
 
-<img src="선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
+<img src="선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
+
+``` r
+knitr::include_graphics('https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/master/Computerized_Statistics/Chapter3/선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-3-1.png')
+```
+
+<img src="https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/master/Computerized_Statistics/Chapter3/선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
 
 표준균일분포를 따르는 난수를 통해 역변환법을 실행하였다.
 X~U(a,b)이므로 a,b의 값을 설정한다면 a와 b사이에서 확률변수 값들은 일정한 확률을 가질 것이다.
@@ -125,7 +137,7 @@ f<-function(x) x^2
 curve(f,0,2,n=100,col='red',lwd=5,add=TRUE)
 ```
 
-<img src="선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+<img src="선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
 
 ``` r
 below<-length(y1[(y1<=f1)])
@@ -141,6 +153,12 @@ above<-length(y1[(y1>f1)])
 ```
 
     ## [1] 2.6432
+
+``` r
+knitr::include_graphics('https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/master/Computerized_Statistics/Chapter3/선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-6-1.png')
+```
+
+<img src="https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/master/Computerized_Statistics/Chapter3/선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
 
 시각적으로도 확인할 수 있다.
 
@@ -266,7 +284,7 @@ f<-function(x) exp(x)
 curve(f,0,1,n=100,col='red',lwd=5,add=TRUE)
 ```
 
-<img src="선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+<img src="선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
 
 ``` r
 below<-length(y1[(y1<=f1)])
@@ -282,6 +300,12 @@ exp(1)*below/n
 ```
 
     ## [1] 1.72475
+
+``` r
+knitr::include_graphics('https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/master/Computerized_Statistics/Chapter3/선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-12-1.png')
+```
+
+<img src="https://raw.githubusercontent.com/koojaekwan/jaekwan-s-R/master/Computerized_Statistics/Chapter3/선형합동법,-Hit-or-Miss,-표본평균법,-주표본기법_files/figure-markdown_github/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
 마찬가지로, 시각적으로도 쉽게 확인할 수 있다.
 
