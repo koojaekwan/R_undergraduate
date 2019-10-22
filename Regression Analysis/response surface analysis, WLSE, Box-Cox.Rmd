@@ -218,9 +218,9 @@ qqnorm(log_trans$residuals)
 qqline(log_trans$residuals)
 ```  
 
-### <Reference>  
+## Reference  
 
-#### Response Surface Analysis  
+### Response Surface Analysis  
 
 [contour](https://rdrr.io/cran/rsm/man/contour.lm.html)  
 
@@ -229,17 +229,17 @@ qqline(log_trans$residuals)
 [rsm in R for response-surface regression](https://www.rdocumentation.org/packages/rsm/versions/1.0/topics/rsm)  
 
 
-#### WLSE  
+### WLSE  
 
 [weighted linear regression in r](https://www.datasciencecentral.com/profiles/blogs/weighted-linear-regression-in-r)  
 
 
-#### BOX-COX  
+### BOX-COX  
 
 [box cox transformation](https://rpubs.com/bskc/288328)  
 
 
-#### 참고 문헌 : 회귀분석 제 2판 (김충락, 강근석)
+### 참고 문헌 : 회귀분석 제 2판 (김충락, 강근석)
 
 
  
