@@ -245,9 +245,7 @@ lm(Y~X, data=data2, weights = w)
 
 weighted least estimator은 다음과 같다.
 
-$$
-\\hat{\\beta\_0} = -2.26413 , \\hat{\\beta\_1} = 1.16482
-$$
+$\\hat{\\beta\_0} = -2.26413 , \\hat{\\beta\_1} = 1.16482$
 
 모형이 적합한지 확인해보자.
 
