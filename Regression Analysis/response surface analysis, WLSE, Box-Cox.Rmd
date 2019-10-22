@@ -218,12 +218,14 @@ qqnorm(log_trans$residuals)
 qqline(log_trans$residuals)
 ```  
 
-### Reference  
+### <Reference>  
 
 #### Response Surface Analysis  
 
 [contour](https://rdrr.io/cran/rsm/man/contour.lm.html)  
+
 [download the paper](https://www.jstatsoft.org/article/view/v032i07)  
+
 [rsm in R for response-surface regression](https://www.rdocumentation.org/packages/rsm/versions/1.0/topics/rsm)  
 
 
