@@ -94,14 +94,16 @@ w<-c(1.24028,2.18224,7.84930,7.84930,7.84930,7.84930,7.84930,7.43652,6.99309,6.7
      0.78342,0.47385,0.46621,0.45878,0.45327,0.44968,0.41435,0.31182,0.31079,0.30672,0.30672,0.30672,0.31079,0.28033,0.30571,0.32680,0.30571)
 ```  
 
-35개의 관측치로 이루어진 자료이다. 여기서 w는 weight를 의미한다. 
+35개의 관측치로 이루어진 자료이다. 여기서 w는 weight를 의미한다.  
+선형과 비선형 least squares regression을 포함한 대부분 모델링을 처리하는 방법에서의 일반적인 가정 중 하나는 각 데이터 포인트들은 동일한 precise information을 제공한다는 것이다. 즉, 오차항의 분산은 예측 변수의 모든 값에 대해 일정하다.  
+하지만, 이 가정은 모든 모형에 대해 적용하는 것이 불가능하다. 그러므로 weight가 주어진 상황에서의 분석을 해보려고 한다.  
 
 ### add the error terms.  
 
 ```{r}
 set.seed(2019)
-X<-x+rnorm(n=1,mean=0,sd=1)
-Y<-y+rnorm(n=1,mean=0,sd=1)
+X<-x+rnorm(n=1,mean=0,sd=0.1)
+Y<-y+rnorm(n=1,mean=0,sd=0.1)
 
 data2<-data.frame(X,Y,w)
 head(data2)
@@ -124,7 +126,7 @@ lm(Y~X, data=data2, weights = w)
 
 weighted least estimator은 다음과 같다. 모형이 적합한지 확인해보자.   
 
-$\hat{\beta_0} = -2.26413 , \hat{\beta_1} = 1.16482$  
+$\hat{\beta_0} = -1.02663 , \hat{\beta_1} = 1.16482$  
 
 
 ```{r}
@@ -132,6 +134,7 @@ summary(lm(Y~X, data=data2, weights = w))
 ```  
 
 절편과 기울기의 p-value는 모두 충분히 작다. 또한 F-statistic은 매우 크고 p-value는 거의 0이므로 모형은 적절하다고 판단할 수 있다.  
+
 
 ## 3.Make your own dataset based on data in Example 6.7(p.259).  Let Y<-Y+e, where e~N(0,1).  
 
