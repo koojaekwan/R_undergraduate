@@ -221,7 +221,7 @@ qqnorm(log_trans$residuals)
 qqline(log_trans$residuals)
 ```  
 
-## Reference  
+## Reference  - click the hyperlink!
 
 ### Response Surface Analysis  
 
@@ -229,7 +229,7 @@ qqline(log_trans$residuals)
 
 [download the paper](https://www.jstatsoft.org/article/view/v032i07)  
 
-[rsm in R for response-surface regression](https://www.rdocumentation.org/packages/rsm/versions/1.0/topics/rsm)  
+[rsm in R for response-surface analysis](https://www.rdocumentation.org/packages/rsm/versions/1.0/topics/rsm)  
 
 
 ### WLSE  

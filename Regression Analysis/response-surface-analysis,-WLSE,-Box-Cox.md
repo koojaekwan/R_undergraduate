@@ -19,7 +19,7 @@ Jae Kwan Koo
     -   [(2)Fit the data to the Box-Cox transformation model.](#fit-the-data-to-the-box-cox-transformation-model.)
         -   [log transformation model](#log-transformation-model)
     -   [(3)Compare two models in (1) and (2) by using the Q-Q plot of residuals in each model.](#compare-two-models-in-1-and-2-by-using-the-q-q-plot-of-residuals-in-each-model.)
--   [Reference](#reference)
+-   [Reference - click the hyperlink!](#reference---click-the-hyperlink)
     -   [Response Surface Analysis](#response-surface-analysis)
     -   [WLSE](#wlse)
     -   [BOX-COX](#box-cox)
@@ -455,8 +455,8 @@ qqline(log_trans$residuals)
 
 <img src="response-surface-analysis,-WLSE,-Box-Cox_files/figure-markdown_github/unnamed-chunk-19-1.png" style="display: block; margin: auto;" />
 
-Reference
----------
+Reference - click the hyperlink!
+--------------------------------
 
 ### Response Surface Analysis
 
@@ -464,7 +464,7 @@ Reference
 
 [download the paper](https://www.jstatsoft.org/article/view/v032i07)
 
-[rsm in R for response-surface regression](https://www.rdocumentation.org/packages/rsm/versions/1.0/topics/rsm)
+[rsm in R for response-surface analysis](https://www.rdocumentation.org/packages/rsm/versions/1.0/topics/rsm)
 
 ### WLSE
 
