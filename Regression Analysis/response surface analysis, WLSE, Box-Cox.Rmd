@@ -90,7 +90,7 @@ x<-c(1.15,1.90,3,3,3,3,3,5.34,5.38,5.4,5.4,5.45,7.7,7.8,7.81,7.85,7.87,7.91,
 y<-c(0.99,0.98,2.6,2.67,2.66,2.78,2.8,5.92,5.35,4.33,4.89,5.21,7.68,9.81,6.52,9.71,9.82,9.81,
      8.5,9.47,11.45,12.14,11.5,10.65,10.64,9.78,12.39,11.03,8,11.9,8.68,7.25,13.46,10.19,9.93)
 
-w<-c(1.24028,2.18224,7.84930,7.84930,7.84930,7.84930,7.84930,7.43652,6.99309,6.78574,6.78574,6.30514,0.89204,0.84420,0.83963,0.82171,0.81296,0.79588,
+old_w<-c(1.24028,2.18224,7.84930,7.84930,7.84930,7.84930,7.84930,7.43652,6.99309,6.78574,6.78574,6.30514,0.89204,0.84420,0.83963,0.82171,0.81296,0.79588,
      0.78342,0.47385,0.46621,0.45878,0.45327,0.44968,0.41435,0.31182,0.31079,0.30672,0.30672,0.30672,0.31079,0.28033,0.30571,0.32680,0.30571)
 ```  
 
@@ -105,32 +105,82 @@ set.seed(2019)
 X<-x+rnorm(n=1,mean=0,sd=0.1)
 Y<-y+rnorm(n=1,mean=0,sd=0.1)
 
-data2<-data.frame(X,Y,w)
+data2<-data.frame(X,Y,old_w)
 head(data2)
 ```  
 
 오차항을 넣어준 뒤 X,Y의 변수를 재할당하였다. 그리고 데이터프레임으로 만들어 앞 6개 행만 확인해보았다.  
+```{r}
+g1<-c(X[1:2])
+g2<-c(X[3:7])
+g3<-c(X[8:12])
+g4<-c(X[13:19])
+g5<-c(X[20:25])
+g6<-c(X[26:35])
+
+h1<-c(Y[1:2])
+h2<-c(Y[3:7])
+h3<-c(Y[8:12])
+h4<-c(Y[13:19])
+h5<-c(Y[20:25])
+h6<-c(Y[26:35])
+
+group_data_X<-data.frame(cbind(g1,g2,g3,g4,g5,g6))
+group_data_Y<-data.frame(cbind(h1,h2,h3,h4,h5,h6))
+```  
+
+X값들이 비슷한 것들끼리 그룹화 하였다. 총 6개의 그룹으로 나누었다.  
+
+```{r}
+options("scipen" = 100)     # 소수점 100자리까지 표현.
+
+apply(group_data_X,2,mean)  # X그룹별 평균
+apply(group_data_Y,2,var)   # 반응변수 Y그룹별 표본분산
+```  
+
+각 그룹내에 속하는 X값들의 표본 평균과 반응변수 값들의 표본분산을 계산하였다.  
+
+```{r}
+sj2<-c(0.00002777778, 0.00641777778,0.30577777778,1.94071555556,0.93569888889,3.89641000000)
+xbarj<-c(1.598852,3.073852,5.467852,7.892852,9.196852,10.291852)
+
+temp_data<-data.frame(temp_y=sj2,temp_x=xbarj)
+
+temp_lm<-lm(temp_y~temp_x, data=temp_data)
+summary(temp_lm)
+```  
+
+이 표본평균을 설명변수로 반응변수의 표본분산을 반응변수로 하는 적절한 회귀모형을 찾았다. p-value가 0.05보다 작아 적절한 모형이 적합되었음을 알 수 있다.   
+
+```{r}
+pre_result<-predict(temp_lm, newdata=data.frame(temp_x=data2$X))
+
+library(tidyverse)
+final_data<-data.frame(pre_result) %>% transmute(new_w = 1/pre_result) %>% cbind(data2)
+final_data$new_w[1:2]<-0   # 음수의 값인 가중치에 대해 0을 부여하여 대체
+
+final_data
+```  
+
+이 회귀식에 x_bar대신 각 관측값 $X_i$들을 대입하여 $\hat{s_i^2}$을 계산하였다. 가중치 $w_i$는 $\hat{s_i^2}$의 역수로 주어지므로 tidyverse패키지안의 dplyr패키지의 transmute함수를 이용해 전처리 했고, 기존의 데이터와 합하여 확인하였다. 음수가 나오는 weight가 있었는데 이 경우 0으로 대체한 후 진행하였다. 이를 바탕으로 새로운 weight에 대해 가중최소제곱법을 적용한 결과는 아래와 같이 주어진다.  
+
+```{r}
+lm(Y~X,data=final_data, weights=new_w)
+```  
+
+따라서 가중최소제곱법을 적용할 시에 $\hat{y} = -0.9305+1.1645X$ 이 된다.  
 
 ### linear model with weight  
 
 ```{r}
-lm(y~x, data=data2,weights = w)
+lm(y~x, data=data2,weights = old_w)
 ```  
 
 오차항이 없을때, weight가 주어진 linear model이다. 이 식은 책의 식과 같음을 확인할 수 있다.  
 이제 오차항이 주어졌을 때의 모형을 살펴보자.  
 
 ```{r}
-lm(Y~X, data=data2, weights = w)
-```  
-
-weighted least estimator은 다음과 같다. 모형이 적합한지 확인해보자.   
-
-$\hat{\beta_0} = -1.02663 , \hat{\beta_1} = 1.16482$  
-
-
-```{r}
-summary(lm(Y~X, data=data2, weights = w))
+summary(lm(Y~X, data=final_data, weights = new_w))
 ```  
 
 절편과 기울기의 p-value는 모두 충분히 작다. 또한 F-statistic은 매우 크고 p-value는 거의 0이므로 모형은 적절하다고 판단할 수 있다.  
@@ -229,7 +279,7 @@ qqline(log_trans$residuals)
 
 [download the paper](https://www.jstatsoft.org/article/view/v032i07)  
 
-[rsm in R for response-surface analysis](https://www.rdocumentation.org/packages/rsm/versions/1.0/topics/rsm)  
+[rsm in R for response-surface-analysis analysis](https://www.rdocumentation.org/packages/rsm/versions/1.0/topics/rsm)  
 
 
 ### WLSE  
