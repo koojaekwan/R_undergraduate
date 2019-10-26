@@ -11,6 +11,7 @@ Jae Kwan Koo
 -   [2.Make your own dataset based on data in Example 6.6(p.254). Let X1&lt;-X1+e, Y&lt;-Y+e, where e~N(0,0.1^2). Compute the WLSE using the same method as the one in text.](#make-your-own-dataset-based-on-data-in-example-6.6p.254.-let-x1-x1e-y-ye-where-en00.12.-compute-the-wlse-using-the-same-method-as-the-one-in-text.)
     -   [set the data](#set-the-data-1)
     -   [add the error terms.](#add-the-error-terms.-1)
+    -   [Get the weights](#get-the-weights)
     -   [linear model with weight](#linear-model-with-weight)
 -   [3.Make your own dataset based on data in Example 6.7(p.259). Let Y&lt;-Y+e, where e~N(0,1).](#make-your-own-dataset-based-on-data-in-example-6.7p.259.-let-y-ye-where-en01.)
     -   [(1)Fit the data to the multiple linear regression model.](#fit-the-data-to-the-multiple-linear-regression-model.)
@@ -215,6 +216,8 @@ head(data2)
     ## 6 3.073852 2.728524 7.84930
 
 오차항을 넣어준 뒤 X,Y의 변수를 재할당하였다. 그리고 데이터프레임으로 만들어 앞 6개 행만 확인해보았다.
+
+### Get the weights
 
 ``` r
 g1<-c(X[1:2])
