@@ -268,7 +268,7 @@ summary(out2)와 pi/4를 통해 비교해보자. 평균값과 pi/4는 거의 맞
 
 ### hit or miss  
 
-$\int^1_0 cos(x)dx$  
+$\int^1_0 cos(x) dx$  
 
 ```{r}
 set.seed(123)
