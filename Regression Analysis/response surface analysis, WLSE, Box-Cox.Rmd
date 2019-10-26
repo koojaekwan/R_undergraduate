@@ -212,7 +212,7 @@ qqPlot(rstandard(log_trans))
 변환하기 전의 Q-Q plot은 6번 잔차가 신뢰대 밖으로 나가는 모습을 보이고 있다.  
 또한, 로그변환 한 모형의 Q-Q plot의 잔차들이 조금더 직선위에 잘 모여있는 모습이다. 그러므로, 로그변환한 모형이 정규분포에 더 가까움을 알 수 있다.  car package의 함수를 이용하지 않고 기본함수로도 Q-Q plot은 그려볼 수 있다.  
 
-```{r, results="hide"}
+```{r}
 par(mfrow=c(1,2))
 qqnorm(multi_lm$residuals)
 qqline(multi_lm$residuals)
