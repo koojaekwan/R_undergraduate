@@ -296,3 +296,63 @@ $L(\lambda | X=x)$ 로그 가능도 함수를 이용해서 계산하였다.
 x0가 람다0 에 대한 초기치를 부여한 것이다.
 
 2.814317이라는 람다의 추정치를 구할 수 있었다.  
+
+```{r}
+f(2.814317,x,length(x))
+f(1/mean(x),x,length(x))  #mle : 1/xbar due to lambda
+```  
+
+지수분포가 (1/theta)exp^(1/theta)x 모양이었으면, mle가 xbar가 나왔을테지만 $\lambda$로 되어있어 mle는 역수형태가 된다. 위의 알고리즘을 통해 구한 해를 지수분포 함수 f에 대입했을 때, 거의 0이라는 값을 얻을 수 있어 해가 맞음을 확인할 수 있고, mle를 대입한 값은 당연히 0이 나오는 모습도 볼 수 있다.  
+
+
+
+#### while문을 활용한 algorithm 몇 가지 추가.
+
+```{r, eval=FALSE}
+x1 <- 10   # first number to satisfy domain
+n <- 1
+
+while(T){
+  x0 <- x1
+  fx <- x0^3-7*x0^2-7*x0-8
+  dfx <- 3*x0^2-14*x0-7
+  x1 <- x0-fx/dfx      
+  change <- abs((x1-x0)/x0)
+  cat(n, x1, change, '\n')
+  
+  if( change < 1e-6 ) break;
+  n <- n+1
+  
+  if(n>100) break;   
+}
+
+while(T){
+  x0 <- x1
+  fx <- x0^3-7*x0^2-7*x0-8
+  dfx <- 3*x0^2-14*x0-7
+  x1 <- x0-fx/dfx     
+  change <- abs((x1-x0)/x0) 
+  cat(n, x1, change, '\n')
+  
+  if( change < 1e-6 | n>100 ) break;
+  n <- n+1
+}
+
+
+while(T){
+  x0 <- x1
+  fx <- x0^3-7*x0^2-7*x0-8
+  dfx <- 3*x0^2-14*x0-7
+  x1 <- x0-fx/dfx    
+  change <- abs((x1-x0)/x0)
+  cat(n, x1, change, '\n')
+  
+  if( change < 1e-6 ) break;
+  n <- n+1
+  
+  if(n>100) break;  
+}
+```
+
+
+
