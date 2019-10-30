@@ -195,7 +195,7 @@ n<-10000
 out2<-numeric(100)
 
 for(i in 1:100){
-  x<-runif(n,0,1)
+  x<-runif(n,0,2)
   out2[i]<-mean(g(x)/f(x))     
 }                
 
