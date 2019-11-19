@@ -185,9 +185,9 @@ neuralnet에서는 반응변수를 수치로 보게 된다.
 
 -   threshold : 에러의 감소분이 threshold 값보다 작으면 stop
 -   hidden : hidden node 수.
-    *hidden=c(2,1) : hidden layer 2개가 각각 hidden node 2개, 1개를 가짐.
-    *linear.output: 활성함수('logistic' or 'tanh')가 출력 뉴런에 적용되지 않아야 하는 경우(즉, 회귀) TRUE로 설정(default)
-    \*stepmax: 훈련 수행 최대 횟수
+    -   hidden=c(2,1) : hidden layer 2개가 각각 hidden node 2개, 1개를 가짐.
+-   linear.output: 활성함수('logistic' or 'tanh')가 출력 뉴런에 적용되지 않아야 하는 경우(즉, 회귀) TRUE로 설정(default)
+-   stepmax: 훈련 수행 최대 횟수
 
 ``` r
 plot(net.dividend)
