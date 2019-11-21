@@ -29,10 +29,10 @@ library(MVN) # for multivariate normality test
 getwd()
 ```
 
-    ## [1] "D:/Jae Kwan/R프로그래밍/Multivariate analysis/DCA"
+    ## [1] "D:/Jae Kwan/R프로그래밍/Multivariate analysis"
 
 ``` r
-setwd("D:\\Jae Kwan\\R프로그래밍\\Multivariate analysis\\DCA")
+setwd("D:\\Jae Kwan\\R프로그래밍\\Multivariate analysis")
 ```
 
 #### Import the data
@@ -241,7 +241,7 @@ boxM
     ##         class = c("htest", "boxM"))
     ##     return(out)
     ## }
-    ## <bytecode: 0x0000000026eed708>
+    ## <bytecode: 0x0000000026e8faa0>
     ## <environment: namespace:biotools>
 
 p-value는 유의수준 0.05보다 훨씬 작다. 따라서, 두 집단의 분산이 동일하다는 귀무가설을 기각한다. 즉, 두 집단의 공분산은 같지 않다고 말할 수 있다.

@@ -33,7 +33,7 @@ library(MVN) # for multivariate normality test
 
 ```{r}
 getwd()
-setwd("D:\\Jae Kwan\\R프로그래밍\\Multivariate analysis\\DCA")
+setwd("D:\\Jae Kwan\\R프로그래밍\\Multivariate analysis")
 ```  
 
 #### Import the data  
