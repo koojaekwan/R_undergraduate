@@ -3,10 +3,10 @@ title: "Artificial Neural Network"
 sustitle: "practice"
 author: "Jae Kwan Koo"
 output:
+  word_document: default
   github_document:
     toc: yes
     toc_depth: 4
-  word_document: default
   html_document:
     fig_height: 6
     fig_width: 10
