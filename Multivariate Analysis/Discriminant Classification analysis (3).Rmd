@@ -1,0 +1,151 @@
+---
+title: "Discriminant and Classification analysis(DCA) - (3)"
+author: "Jae Kwan Koo"
+output:
+  github_document:
+    toc: yes
+    toc_depth: 4
+  word_document: default
+  html_document:
+    fig_height: 6
+    fig_width: 10
+    highlight: textmate
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+---  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T, fig.align = "center", message=F, warning=F, fig.height = 5, cache=F, dpi = 300, dev = "png")
+```  
+
+#### Ready for analysis  
+
+```{r}
+library("MVN")
+library(biotools)
+library(tidyverse)
+```  
+
+```{r}
+setwd("D:\\Jae Kwan\\3학년2학기\\다변량2\\191010 다변량 실습\\Rdata")
+getwd()
+```  
+
+```{r}
+data<-read.table("admission.txt",header=T)
+head(data); tail(data)
+```  
+
+group별로 GPA, GMAT변수가 존재.  
+
+```{r}
+c1<-data[data$group==1,1:2]
+c2<-data[data$group==2,1:2]
+c3<-data[data$group==3,1:2]
+```  
+
+group별로 데이터를 분리  
+
+### 합동공분산행렬 및 그룹 별 평균  
+
+```{r}
+S1<-cov(c1); S2<-cov(c2); S3<-cov(c3)
+(Sp<-((nrow(c1)-1)*S1+(nrow(c2)-1)*S2+(nrow(c3)-1)*S3)/(nrow(c1)+nrow(c2)+nrow(c3)-3))
+
+data.frame(group1=colMeans(c1),group2=colMeans(c2),group3=colMeans(c3))
+```  
+
+### MVN  
+
+```{r}
+result_c1 <- mvn(c1)
+result_c2 <- mvn(c2)
+result_c3 <- mvn(c3)
+list(result_c1, result_c2, result_c3)
+
+par(mfrow=c(2,2))
+mvn(c1, multivariatePlot = 'qq')
+mvn(c2, multivariatePlot = 'qq')
+mvn(c3, multivariatePlot = 'qq')
+```  
+
+이전에 그룹3의 다변량정규성을 만족한다고 가정하고 넘어갔지만 outlier을 찾아 제거 후 분석해보자.  
+
+#### delete the obs  
+
+```{r}
+mvoutlier::chisq.plot(c3)
+```  
+
+mvoutlier패키지 chisq.plot함수를 사용하였다. chisq plot에서 정규성에 벗어나는 점을 눈으로 확인 후 직접 obs를 선택하여 그림에서 바로 제거할 수 있다. 그리고 ESC를 눌러 창에서 나오게 되면 제거된 obs의 number도 확인 가능하다.  
+
+```{r}
+mvn(c3[-7,],multivariatePlot = 'qq')
+```  
+
+7번째 obs를 제거한 후 다시 MVN을 실시하였다.  
+이제는 다변량 정규성을 만족한다.  
+
+```{r}
+c3<-c3[-7,]
+data2<-rbind(c1,c2,c3)
+
+new_data<-inner_join(data,data2,by=c("GPA","GMAT"))
+
+boxM(new_data[,-3], new_data[,3]) # group에 대해 공분산 동질성 검정 -> QDA사용
+```  
+
+데이터도 7번 obs는 제거 후, 다시 공분산동질성 검정을 실시하였고, 그 결과 동질하지 않다고 판단하였고 분석을 위해서 QDA를 사용해야 한다.  
+
+### QDA  
+
+```{r}
+QDA<-qda(group~GPA+GMAT, data=new_data, prior=c(1,1,1)/3)
+
+qcluster<-predict(QDA,new_data)$class
+qct<-table(new_data$group,qcluster)
+
+qct
+```  
+
+#### APER  
+
+```{r}
+APER<-(1-sum(diag(prop.table(qct))))*100
+
+cat("오분류율 : ",APER)
+```
+
+### QDA - CV  
+
+```{r}
+QDA<-qda(group~GPA+GMAT, data=new_data, prior=c(1,1,1)/3, CV=T)
+
+
+(confusion_data<-table(new_data$group, QDA$class))
+EAER<-(1-sum(diag(confusion_data))/sum(confusion_data) )*100 # (1-sum(diag(prop.table(confusion_data))))*100  
+
+cat("오분류율은 : ",EAER)
+```  
+
+일반적으로 겉보기오류율 APER는 계산이 쉽고 직관적으로 명확하지만, 최적오류율 AER을 실제보다 작게 추정하는 경향이 있다. 이는 표본크기가 큰 경우에도 변하지 않는데 본질적인 원인은 판별함수를 만드는 데에 사용된 자료를 판별함수의 평가에 그대로 이용하는 재대입법 RSM 때문이다.  
+재대입법의 대안으로 전체 표본을 training과 validation으로 나누어 전자로 판별함수를 만들고 후자로 이것의 분류규칙의 정도를 평가하는 `교차타당성 방법(cross-validation method, CVM)`도 고려할 수 있다.  
+이 방법은 오류율에 대한 불편추정치를 제공하지만 표본크기가 비교적 커야 하며, 또한 분류함수를 구할 때 훈련표본을 사용하여 모든 표본을 다 이용하는 것이 아니기 때문에 구해진 분류함수가 실제 우리가 구하고자 하는 것이 아닐 수 있다.  
+
+위의 오분류율은 교차타당성방법 CVM에 의해 구해졌다.  
+APER(apparent error rate)과 EAER은 이 예제에서는 같다.  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
