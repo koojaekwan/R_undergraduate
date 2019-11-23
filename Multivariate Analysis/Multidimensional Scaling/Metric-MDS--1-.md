@@ -204,7 +204,7 @@ text(x,y+0.6, rownames(d), cex=0.8, pos=1)
 abline(v=0, h=0)
 ```
 
-<img src="Metric-MDS_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+<img src="Metric-MDS--1-_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
 
 비슷한 거리면 비슷한 경제 예측을 한 기관이라고 해석할 수 있을 것.
 
@@ -309,7 +309,7 @@ text(x,y,sign, cex=0.8, pos=1)
 abline(v=0,h=0)
 ```
 
-<img src="Metric-MDS_files/figure-markdown_github/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+<img src="Metric-MDS--1-_files/figure-markdown_github/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
 
 적합도가 56.2%인 MDS 그림이다.
 
@@ -401,7 +401,7 @@ text(x, y, bank, cex=0.8, pos=1)
 abline(v=0, h=0)
 ```
 
-<img src="Metric-MDS_files/figure-markdown_github/unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
+<img src="Metric-MDS--1-_files/figure-markdown_github/unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
 
 위의 그림은 적합도가 82.21%인 MDS 그림이다.
 

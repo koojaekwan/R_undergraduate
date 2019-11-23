@@ -133,7 +133,7 @@ text(x,y,player, cex=0.8, pos=2)
 abline(v=0, h=0)
 ```
 
-<img src="Non-Metric-MDS_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+<img src="Non-Metric-MDS--2-_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
 
 ### Shepard Diagram
 
@@ -145,7 +145,7 @@ plot(klpga_sh$x, klpga_sh$yf, pch = ".", xlab = "Dissimilarity", ylab = "Distanc
 lines(klpga_sh$x, klpga_sh$yf, type = "S")
 ```
 
-<img src="Non-Metric-MDS_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+<img src="Non-Metric-MDS--2-_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
 
 함수의 단조성을 가지고 이야기하게 되는데, 전체적으로 단조함수라고 볼 수 있으므로 gof에 대해서 볼 때, 적합이 잘 되었다.
 세퍼드그림은 수직축에 순위상과 수평축에 실제 비유사성에 대한 산점도로 비계량형 MDS모형에서 가정한 f()의 단조성이 만족됨을 보이고 있다.
@@ -158,7 +158,7 @@ plot(klpga_sh$y, klpga_sh$yf, pch=".", xlab="FitDissimilarity", ylab="Distance",
 lines(klpga_sh$y, klpga_sh$yf, type="p")
 ```
 
-<img src="Non-Metric-MDS_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+<img src="Non-Metric-MDS--2-_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
 
 상그림은 수직축에 순위상과 수평축에 2차원의 형상좌표로부터 얻어지는 비유사성에 대한 산점도로 원점을 지나는 직선상에 잘 놓여 있어 비계량형 MDS가 잘 적합되었다고 여겨진다.
 
@@ -278,7 +278,7 @@ text(x,y,sign, cex=0.8, pos=1)
 abline(v=0,h=0)
 ```
 
-<img src="Non-Metric-MDS_files/figure-markdown_github/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+<img src="Non-Metric-MDS--2-_files/figure-markdown_github/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
 
 MDS 그림에서의 모스부호끼리의 거리가 살짝 달라지긴 했지만, 기본적으로 큰 차이가 없어보인다.
 
@@ -292,7 +292,7 @@ plot(morse_sh$x, morse_sh$yf, pch = ".", xlab = "Dissimilarity", ylab = "Distanc
 lines(morse_sh$x, morse_sh$yf, type = "S")
 ```
 
-<img src="Non-Metric-MDS_files/figure-markdown_github/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+<img src="Non-Metric-MDS--2-_files/figure-markdown_github/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
 함수의 단조성을 가지고 이야기하게 되는데, 전체적으로 단조함수라고 볼 수 있으므로 gof에 대해서 볼 때, 적합이 잘 되었다.
 세퍼드그림은 수직축에 순위상과 수평축에 실제 비유사성에 대한 산점도로 비계량형 MDS모형에서 가정한 f()의 단조성이 만족됨을 보이고 있다.
@@ -305,6 +305,6 @@ plot(morse_sh$y, morse_sh$yf, pch=".", xlab="FitDissimilarity", ylab="Distance",
 lines(morse_sh$y, morse_sh$yf, type="p")
 ```
 
-<img src="Non-Metric-MDS_files/figure-markdown_github/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
+<img src="Non-Metric-MDS--2-_files/figure-markdown_github/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
 
 상그림은 수직축에 순위상과 수평축에 2차원의 형상좌표로부터 얻어지는 비유사성에 대한 산점도로 원점을 지나는 직선상에 잘 놓여 있어 비계량형 MDS가 잘 적합되었다고 여겨진다.

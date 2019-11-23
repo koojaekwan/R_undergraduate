@@ -153,7 +153,7 @@ text(x,y,color_name, cex=0.8, pos=1)
 abline(v=0, h=0)
 ```
 
-<img src="Metric-and-Non-Metric-practice_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+<img src="Metric-and-Non-Metric-practice--3-_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
 
 MDS map은 원형태를 형성하는 모습을 보이고 있다.
 여기서 제 1축을 기준으로 왼쪽에는 녹색계열의 색들이, 오른쪽에는 노란색계열의 색들이 위치하고 있다. 또한, 제 2축을 기준으로는 위쪽에는 밝은색들이 아래쪽에는 상대적으로 진한색들이 그룹을 이루고 있다.
@@ -168,7 +168,7 @@ plot(data_sh$x,data_sh$yf, pch = ".", xlab = "Dissimilarity", ylab = "Distance",
 lines(data_sh$x, data_sh$yf, type = "S")
 ```
 
-<img src="Metric-and-Non-Metric-practice_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+<img src="Metric-and-Non-Metric-practice--3-_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
 
 세퍼드그림은 수직축에 순위상과 수평축에 실제 비유사성에 대한 산점도로 비계량형 MDS에서 가정한 f(⦁)의 단조성이 만족됨을 보이고 있다. 위에서의 뛰어난 적합도는 세퍼드그림에서 매우 돋보이는 단조성을 통해서도 짐작할 수 있다.
 
@@ -185,7 +185,7 @@ plot(data_sh$y,data_sh$yf, pch = ".", xlab="FitDissimilarity", ylab="Distance",
 lines(data_sh$y, data_sh$yf, type="p")
 ```
 
-<img src="Metric-and-Non-Metric-practice_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+<img src="Metric-and-Non-Metric-practice--3-_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
 
 상그림은 수직축에 순위상과 수평축에 2차원의 형상좌표로부터 얻어지는 비유사성에 대한 산점도로 원점을 지나는 직선상에 잘 놓여 있어 비계량형 MDS가 잘 적합되었다고 여겨진다.
 또한, 위의 stress에 대한 결과처럼 적합정도는 뛰어남(excellent)에 속한다.
@@ -241,7 +241,7 @@ text(x, y, color_name, cex=0.8, pos=1)
 abline(v=0, h=0)
 ```
 
-<img src="Metric-and-Non-Metric-practice_files/figure-markdown_github/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
+<img src="Metric-and-Non-Metric-practice--3-_files/figure-markdown_github/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
 non-metric MDS, metric MDS 방법을 통해 살펴본 MDS 그림은 둘 다 비슷한 패턴을 보인다.
 
@@ -325,7 +325,7 @@ text(x,y+0.6, rail_name, cex=0.8, pos=1)
 abline(v=0, h=0)
 ```
 
-<img src="Metric-and-Non-Metric-practice_files/figure-markdown_github/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
+<img src="Metric-and-Non-Metric-practice--3-_files/figure-markdown_github/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
 
 dim2축을 기준으로 아래는 east 위는 west를 가리키며, dim1축을 기준으로 왼쪽은 남부지방, 오른쪽은 중부, 수도권, 강원도 등을 가리킨다.
 
@@ -369,7 +369,7 @@ text(x,y,rail_name, cex=1, pos=3)
 abline(v=0, h=0)
 ```
 
-<img src="Metric-and-Non-Metric-practice_files/figure-markdown_github/unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
+<img src="Metric-and-Non-Metric-practice--3-_files/figure-markdown_github/unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
 
 Metric MDS 그림과 마찬가지로 같은 패턴의 모습을 보여주고 있다.
 
@@ -383,7 +383,7 @@ plot(data2_sh$x,data2_sh$yf, pch = ".", xlab = "Dissimilarity", ylab = "Distance
 lines(data2_sh$x, data2_sh$yf, type = "S")
 ```
 
-<img src="Metric-and-Non-Metric-practice_files/figure-markdown_github/unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
+<img src="Metric-and-Non-Metric-practice--3-_files/figure-markdown_github/unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
 
 세퍼드그림은 수직축에 순위상과 수평축에 실제 비유사성에 대한 산점도로 비계량형 MDS에서 가정한 f(⦁)의 단조성이 만족됨을 보이고 있다.
 
@@ -395,7 +395,7 @@ plot(data2_sh$y,data2_sh$yf, pch = ".", xlab="FitDissimilarity", ylab="Distance"
 lines(data2_sh$y, data2_sh$yf, type="p")
 ```
 
-<img src="Metric-and-Non-Metric-practice_files/figure-markdown_github/unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
+<img src="Metric-and-Non-Metric-practice--3-_files/figure-markdown_github/unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
 
 상그림은 수직축에 순위상과 수평축에 2차원의 형상좌표로부터 얻어지는 비유사성에 대한 산점도로 원점을 지나는 직선상에 잘 놓여 있어 비계량형 MDS가 잘 적합되었다고 여겨진다.
 또한, 위의 stress에 대한 결과처럼 적합정도는 좋음(good)에 속한다.
