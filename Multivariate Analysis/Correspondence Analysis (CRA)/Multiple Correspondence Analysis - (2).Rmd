@@ -19,13 +19,10 @@ output:
 knitr::opts_chunk$set(echo=T, fig.align = "center", message=F, warning=F, fig.height = 5, cache=F, dpi = 300, dev = "png")
 ```  
 
-* CRA:분할표로 나타내어지는 자료의 행과 열범주를 저차원 공간상(2차원)의 점들로 동시에 나타내어, 그들의 관계를 탐구.  
-
-* 다중대응분석 : 다원분할표를과로 나타낸 표시행렬(indicator matrix)나 Burt행렬 의 대응분석.  
-
-* nxq표시행렬 -> q*q버트행렬 -> 대응행렬 -> 잔차행렬의 비정칙값분해 -> 다중cra그림의 좌표점,설명력 
-
-* MCRA : Burt Table from Indicator Matrix.  
+CRA:분할표로 나타내어지는 자료의 행과 열범주를 저차원 공간상(2차원)의 점들로 동시에 나타내어, 그들의 관계를 탐구.  
+다중대응분석 : 다원분할표를과로 나타낸 표시행렬(indicator matrix)나 Burt행렬 의 대응분석.  
+nxq표시행렬 -> q*q버트행렬 -> 대응행렬 -> 잔차행렬의 비정칙값분해 -> 다중cra그림의 좌표점,설명력 
+MCRA : Burt Table from Indicator Matrix.  
 
 ### 성별, 나이, 키에 따른 삼원분할표의 다중 CRA.  
 
