@@ -22,10 +22,26 @@ knitr::opts_chunk$set(echo=T, fig.align = "center", message=F, warning=F, fig.he
 ```{r}
 # install.packages("webshot")
 # webshot::install_phantomjs()
-```
+```  
+
+### Introduction.  
+
+당뇨병에 영향을 주는 8가지 특징을 바탕으로, 기초적인 데이터분석과 통계학습을 통해 당뇨병을 예측하자.
 
 
-```{r}
+변수 | 설명  
+-|-|  
+preg | 임신횟수  
+plas | 혈장 포도당 농도  
+pres | 혈압  
+skin | 피부 주름 두께  
+insu | 2시간 혈청 인슐린  
+mass | weight / (height)^2  
+pedi | 당뇨병 혈통 기능  
+age  | 나이  
+class | 당뇨병 여부  
+
+```{r library}
 # data wrangling
 library(data.table)
 library(tidyverse)    
@@ -54,21 +70,9 @@ setwd("d:/")
 data<-fread("dataset_37_diabetes.csv")
 ```  
 
-### Variable Description.  
+## Data manupulate    
 
-* preg : 임신횟수  
-* plas : 혈장 포도당 농도  
-* pres : 혈압  
-* skin : 피부 주름 두께  
-* insu : 2시간 혈청 인슐린  
-* mass : weight / (height)^2  
-* pedi : 당뇨병 혈통 기능  
-* age : 나이  
-* class : 당뇨병 여부  
-
-## EDA  
-
-```{r echo=FALSE}
+```{r, echo=FALSE}
 datatable(data,caption = 'Table : whole data',
           filter = 'top', options = list(pageLength = 10, autoWidth = TRUE))
 ```  
@@ -78,7 +82,7 @@ summary(data); str(data)
 data$class<-as.factor(data$class)
 ```  
 
-### Missing Values.  
+### Handling the Missing Values.  
 
 
 ```{r}
@@ -95,16 +99,23 @@ data<-data %>% mutate(plas=replace(plas, list=(plas==0), NA),
 
 
 # dataset을 m개 만든다. 디폴트는 5 , method : randomforest
-miceMod <- mice(data,method="rf",seed = 1234,print=F) 
+miceMod <- mice(data, method="rf",seed = 1234,print=F) 
 
 
 miceOutput <- complete(miceMod)
 datatable(miceOutput)
+```  
 
+complete함수를 통해 결측값에 대해 채워진 dataframe을 재지정.  
+이 채워진 데이터들에 대해 회귀분석을 해보자.  
+
+```{r}
 fit <- with(miceMod,lm(preg~plas+pres+skin+insu+mass+pedi+age+class))
 pool_fit <- pool(fit)
 summary(pool_fit)
 ```  
+
+모든 변수들에 대해 낮은 유의확률에도 유의하다. 따라서 이 mice패키지를 이용해 채운 데이터를 사용해보자.   
 
 ```{r}
 anyNA(miceOutput)
@@ -113,8 +124,15 @@ str(miceOutput)
 data2<-miceOutput
 ```  
 
-
 결측치는 없음을 확인했고, preg(임신횟수)를 제외한 나머지 변수에서 0은 일어날 수 없는 수치이므로 mice패키지를 이용하여 결측치를 채워넣었다.  
+
+* Refer  
+[mice1]<https://rstudio-pubs-static.s3.amazonaws.com/192402_012091b9adac42dbbd22c4d07cb00d36.html>
+[mice2]<https://www.gerkovink.com/miceVignettes/Convergence_pooling/Convergence_and_pooling.html>  
+
+### making age group.  
+
+분석에 따로 쓰이진 않았지만 일단 확인차 만들었다.  
 
 ```{r}
 data2 %>% mutate(age_group=
@@ -127,7 +145,7 @@ data2 %>% mutate(age_group=
                             age>=80 & age<90 ~ "80s")) %>% group_by(age_group) %>% summarise(n=n())
 ```  
 
-나이대별로 사람수를 알 수 있다.  60대 이상부터는 한 그룹으로 묶는게 나아보인다.  
+나이대별 분포를 알 수 있다.  60대 이상부터는 수가 적으므로 한 그룹으로 묶는게 나아보인다.  
 
 ```{r}
 data2 %>% mutate(age_group=
@@ -138,7 +156,7 @@ data2 %>% mutate(age_group=
                             age>=60 ~ "60~")) %>% group_by(age_group) %>% summarise(n=n())
 ```  
 
-```{r, message=FALSE, warning=FALSE, echo=TRUE, fig.height=4.5, fig.width=9}
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
 group_num<-data2 %>% mutate(age_group=
                   case_when(age>=20 & age<30 ~ "20s",
                             age>=30 & age<40 ~ "30s",
@@ -152,17 +170,20 @@ group_num<-data2 %>% mutate(age_group=
 ggplotly(group_num,session="knitr")
 ```  
 
-나이대별로 사람수이다.  
+나이대별 수.  
+~~마우스로 bar에 가져다대면 그에 대한 빈도수를 알 수 있고, 조정할 수 있다.~~  
 
-```{r}
-data2 %>% mutate(age_group=
-                  case_when(age>=20 & age<30 ~ "20s",
+```{r mean table}
+mean_group<-data2 %>% mutate(age_group=
+                            case_when(age>=20 & age<30 ~ "20s",
                             age>=30 & age<40 ~ "30s",
                             age>=40 & age<50 ~ "40s",
                             age>=50 & age<60 ~ "50s",
                             age>=60 ~ "60~")) %>% group_by(age_group) %>%
   summarise(mean(preg),mean(plas),mean(pres),mean(skin),mean(insu),mean(mass),mean(pedi))
-```    
+
+knitr::kable(mean_group)   # table form
+```  
 
 나이대별로 각 요인들의 평균치이다.  
 
@@ -174,6 +195,8 @@ data3<-data2 %>% mutate(age_group=
                             age>=50 & age<60 ~ "50s",
                             age>=60 ~ "60~"))
 ```  
+
+## EDA  
 
 ### Box-Plot {.tabset}
 
@@ -235,7 +258,7 @@ data3[,!(names(data3) %in% c("class"))] %>% group_by(age_group) %>%
   
 ##
 
-content below tabbed region
+content below tabbed region  
 
 
 ```{r echo=FALSE}
@@ -262,8 +285,9 @@ data3 %>%
   corrplot.mixed(tl.cex=0.85)
 ```  
 
+(preg, age) (plas, insu) (skin, mass) 변수들이 어느정도 상관관계를 보이고 있다.  
 
-## partition the dataset.  
+## Machine Learning Algorithm. {.tabset}  
 
 ```{r}
 set.seed(1234)
@@ -273,7 +297,7 @@ train<-data3[index,]
 test<-data3[-index,]
 ```  
 
-train과 test데이터를 70%확률로 랜덤하게 분리하였다.  
+train과 test데이터를 70%확률로 랜덤하게 분리.  
 
 ```{r echo=FALSE}
 datatable(train,caption = 'Table : train data',
@@ -283,9 +307,11 @@ datatable(test, caption = "Table : test data",
           filter = 'top', options = list(pageLength = 10, autoWidth = TRUE))
 ```  
 
-## Logistic Regression.  
+### Logistic Regression.  
 
 ```{r}
+set.seed(1234)
+
 logistic_model<-glm(class_level~preg+plas+pres+skin+insu+mass+pedi+age,
                     data = train, family = "binomial")
 
@@ -303,9 +329,10 @@ mean(test$class_level==test$class_pred)
 confusionMatrix(as.factor(test$class_pred),as.factor(test$class_level))
 ```  
 
-In this exercise you will create a ROC curve and compute the area under the curve (AUC) to evaluate the logistic regression model of donations you built earlier.  
 
 ```{r}
+# In this exercise you will create a ROC curve and compute the area under the curve (AUC) to evaluate the logistic regression model of class_level you built earlier.  
+
 ROC<-roc(test$class_level,test$class_prob)            # Create a ROC curve
 
 plot(ROC,col="blue")                                  # Plot the ROC curve
@@ -314,9 +341,11 @@ auc(ROC)                                              # Calculate the area under
 
 
 
-## Decision Tree.  
+### Decision Tree.  
 
 ```{r}
+set.seed(1234)
+
 tree_model <- rpart(class~preg+plas+pres+skin+insu+mass+pedi+age, data = train, method = "class", control = rpart.control(cp = 0))
 
 tree_model
@@ -352,9 +381,11 @@ confusionMatrix(rpartpred, test$class)
 ```  
 
 
-## RandomForest  
+### RandomForest  
 
 ```{r}
+set.seed(1234)
+
 RandomForest_model<-randomForest(class~preg+plas+skin+insu+mass+pedi+age,data=train[,1:9],ntree=500,importance=T)
 prediction2<-predict(RandomForest_model, test[,1:8], type = "class")
 mean(prediction2==test$class)
@@ -378,15 +409,61 @@ ggplot(data=importance_data,aes(x=reorder(V5,-MeanDecreaseGini),y=MeanDecreaseGi
 
 
 ```{r}
-plot(RandomForest_model$err.rate[,1],col='red')
+set.seed(1234)
+
+RandomForest_model2<-randomForest(class~plas+insu+mass+pedi+age,data=train[,1:9],ntree=500,importance=T)
+prediction3<-predict(RandomForest_model2, test[,1:8], type = "class")
+mean(prediction3==test$class)
+
+confusionMatrix(prediction3, test$class)
 ```  
 
-## XGBOOST  
+
 
 ```{r}
+plot(RandomForest_model2$err.rate[,1],col='red')
+```  
 
+
+```{r}
+#Even though random forest is so power full we accept the model only after cross validation
+
+a<-trainControl(method="repeatedcv",number = 10,repeats = 10,index = createMultiFolds(train$class,k=10,times = 10))
+
+rf<- train(x = train[,1:8], y = train[,9], method = "rf", tuneLength = 3,
+              ntree = 500, trControl =a)
+
+b<-predict(rf,test[,1:8])
+confusionMatrix(b,test$class)
+```  
+
+### XGBOOST  
+
+```{r}
+# clf <- xgboost(data        = data.matrix(train[,1:8]), #matrix형을 input data로 활용
+#                label       = train$class,
+#                eta         = 0.025, #gradient descent 알고리즘에서의 learning rate
+#                depth       = 10,
+#                nrounds     = 1500, #maximum number of iterations (steps) required for gradient descent to converge. (?)
+#                objective   = "reg:linear",
+#                eval_metric = "rmse") #회귀모델에서는 RMSE를 모델 accuracy 평가지표로 활용 
+```  
+
+
+```{r}
+set.seed(1234)
+
+xgb<-xgboost(data = as.matrix(train[,1:8]), label = train$class_level, max.depth = 2, eta = 0.025, nthread = 2, nrounds = 100, objective = "binary:logistic")
 ```
 
 
+```{r}
+submission <- data.frame(Id=test$class)
+submission$Response <-predict(xgb, data.matrix(test[,1:8]))
+
+submission$result<-ifelse(submission$Response>mean(submission$Response),"tested_positive","tested_negative")
+
+mean(submission$Id==submission$result)
+```  
 
 
