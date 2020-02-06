@@ -1,0 +1,112 @@
+---
+title: "DAUM MOVIE GPA CRAWLING"
+author: "Jae Kwan Koo"
+output:
+  github_document:
+    toc: yes
+    toc_depth: 4
+  word_document: default
+  html_document:
+    fig_height: 6
+    fig_width: 10
+    highlight: textmate
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+---  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T, fig.align = "center", message=F, warning=F, fig.height = 5, cache=F, dpi = 300, dev = "png")
+```  
+
+# daum movie crawling  
+
+```{r}
+library(dplyr)
+library(rvest)
+
+library(stringr)
+library(data.table)
+```  
+
+
+```{r}
+url<-"https://movie.daum.net/boxoffice/yearly"
+```  
+
+daum 영화 사이트의 연간 영화순위를 뽑아보자.  
+
+```{r, fig.align = "center"}
+library(knitr)
+include_graphics("https://raw.github.com/koojaekwan/jaekwan-s-R/master/진행중/daum/daumsite.PNG")
+```
+
+
+
+```{r}
+a<-read_html(url) %>% html_nodes("#mArticle ul li") 
+a<-gsub("\t","",a)
+
+length(a)
+head(a)
+```  
+
+영화이름을 뽑으려고 클래스로 바로 접근하다보니 잘 되지가 않는다. 따라서 위에서부터 차례대로 접근을 해보자.  
+`li`까지 접근하고 뽑아보자. 페이지상에 있는 안보이던 더 세부적인 태그들이 보이기 시작한다. 여기서 더 접근을 해보자.  
+
+
+```{r, fig.align = "center"}
+library(knitr)
+include_graphics("https://raw.github.com/koojaekwan/jaekwan-s-R/master/진행중/daum/daumsite2.PNG")
+```
+
+
+
+
+
+
+
+### exercise
+
+```{r}
+read_html(url) %>% html_nodes("#mArticle ul li") %>% html_nodes(".txt_grade") %>% html_text()
+```  
+
+연습으로 뽑아봤다. 모두 10점 중에 몇 점이라는 것을 알 수 있다.  
+
+```{r}
+read_html(url) %>% html_nodes("#mArticle ul li") %>% html_nodes(".link_boxthumb") %>% html_text()
+```  
+
+20위까지만 나오므로 그냥 `1:50`으로 만드는게 나아보인다.  
+
+## Work  
+
+```{r}
+title<-read_html(url) %>% html_nodes("#mArticle ul li") %>% html_nodes(".desc_boxthumb .tit_join") %>% html_text()
+
+title
+```  
+
+이제 50개의 연간 영화에 대한 타이틀을 뽑았다.  
+
+```{r}
+grade<-read_html(url) %>% html_nodes("#mArticle ul li") %>% html_nodes(".emph_grade") %>% html_text()
+grade<-as.numeric(grade)
+
+grade
+```  
+
+50개의 연간 평점을 뽑아냈다.  
+
+```{r}
+data<-data.table(title,grade,rank = paste0(1:50,"위"))
+```  
+
+합쳐서 순위를 한눈에 확인해보자.  
+
+```{r}
+data
+```
+
+
