@@ -14,6 +14,7 @@ remDr = remoteDriver(
   port=4445L,
   browserName="chrome")
 
+Sys.sleep(2)
 remDr$open()
 
 remDr$navigate('https://everytime.kr/')
