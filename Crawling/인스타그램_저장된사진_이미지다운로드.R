@@ -32,8 +32,8 @@ password <- remDr$findElement(using="xpath",
                               value='//*[@id="react-root"]/section/main/article/div[2]/div[1]/div/form/div[3]/div/label/input')
 
 
-number$sendKeysToElement(list("01041301843"))
-password$sendKeysToElement(list("!!ku1843"))
+number$sendKeysToElement(list("Your ID"))
+password$sendKeysToElement(list("Your PASSWORD"))
 
 Sys.sleep(3)
 # login
