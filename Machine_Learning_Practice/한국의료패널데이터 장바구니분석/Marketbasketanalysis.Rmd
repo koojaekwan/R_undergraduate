@@ -1,0 +1,659 @@
+---
+title: "Market Basket Analysis : 한국의료패널 데이터를 이용한 운동과 음주, 흡연간의 규칙 관계"
+author: "Jae Kwan Koo"
+output:
+  html_document:
+    fig_height: 6
+    fig_width: 10
+    highlight: textmate
+    theme: united
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+    df_print: paged
+  word_document: 
+  github_document:
+    toc: yes
+    toc_depth: 4
+---  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T, fig.align = "center", message=F, warning=F, fig.height = 5, cache=F, dpi = 300, dev = "png")
+```  
+
+
+
+## Introduction  
+
+현대인의 삶에서 운동은 건강과 아주 밀접한 관계를 가지고 있다. 하지만, 건강을 해치지만 삶과 밀접한 관계를 가지고 있는 요소는 음주와 흡연이다.  
+한국의료패널 연간 데이터를 통해 운동, 음주, 흡연에 대한 설문조사를 가지고 가구원별로 어떤 연관규칙이 존재하는지 장바구니 분석(Market Basket Analysis)를 수행해보기로 한다.  
+
+<br>
+<br>
+
+먼저 association rule를 간단히 살펴보고 분석에 들어가기로 한다.  
+association rule은 item A가 발생하면, item B또한 어떤 확률로 발생한다는 것을 암시하게 된다.  
+
+
+
+
+### Support(지지도)  
+
+전체 구매 건수 가운데 상품 X와 Y를 동시에 구매한 비율을 의미하며 $P(X\cap Y)$로 나타낸다.  
+지지도가 높으면 X와 Y를 동시에 구매할 확률이 높다라고 볼 수 있다.  
+
+지지도는 얼마나 자주 item set이 데이터 셋에서 나타나는지 의미한다.  
+
+$$supp(X \Rightarrow Y)=\dfrac{|X \cup Y|}{n}$$  
+
+다른 말로, X와 Y가 동시에 거래되는 수를 전체 거래내역의 수로 나눈 값이다.  
+
+support값이 낮은 규칙들은 유용하지 않다  
+
+
+
+### Confidence(신뢰도)  
+
+confidence는 상품 x를 구매한 건수 가운데 Y도 같이 구매한 비율을 의미하며 조건부 확률 $P(Y|X)$로 나타낸다.  
+
+$X \Rightarrow Y$ 규칙에 대해, X를 구매하면 얼마나 자주 Y가 구매되는지에 대한 비율을 나타낸다  
+
+
+$$conf(X \Rightarrow Y)=\dfrac{supp(X \cup Y)}{supp(X)}$$
+
+
+
+### Lift(향상도)  
+
+lift는 전체에서 상품 Y를 구매한 비율에 비해 X를 구매한 고객이 Y를 구매한 비율이 몇 배인가를 나타낸다.  
+
+$$P(Y|X)\over P(Y)$$  
+
+
+* lift = 1 : X와 Y가 동시에 일어날 확률 각각의 확률이 일어날 곱과 같다 => 두 제품이 독립적인 관계에 놓여있다.  
+
+* lift >1 : 동시에 구매할 확률이 더 크므로(분모가 더 크다) 밀접한 관계를 가지고있다.  
+
+* lift <1 : 물품 X, Y를 각각 구매할 확률이 더 크다. 같이 구매할 확률이 더 낮으므로 음의 관계를 가진다.  
+
+상관관계보다 연관성을 가진다라고 하는게 알맞다. 왜냐하면, 선형 또는 비선형의 관계를 이야기하는 것이 아니기 때문이다.  
+
+
+$$lift(X \Rightarrow Y)=\dfrac{supp(X \cup Y)}{supp(X)supp(Y) }$$  
+
+높은 향상도 값은 강한 연관성을 나타낸다.  
+
+## Library  
+
+```{r warning=F, message=FALSE}
+# Data manipulation
+library(foreign)     # read.spss
+library(tidyverse)
+library(plyr)
+
+# Analysis
+library(arules)      # Market basket analysis
+library(arulesViz)   # visualization techniques for association rules
+
+# Grid
+library(patchwork)   # grid graphics
+```  
+
+## Data  
+
+```{r}
+koo <- read.spss("t14appen.sav")
+koo <- do.call(cbind.data.frame, koo)
+
+adply(koo, 2, function(x) sum(is.na(x)))
+```  
+
+spss파일 형식인 sav파일을 불러오면 각 컬럼 별 list형태로 되어 있는데, `data.frame()`형태로 변환한 뒤, 존재하는 컬럼을 확인할 수 있다.  
+현재 codebook에서 존재하는 변수 모두가 데이터 안에 있지는 않다.  
+각 컬럼별 결측값은 존재하지 않다.  
+
+
+### Pre-processing  
+
+```{r}
+var <- c("HPID",
+         "S27","S28","S29","S30","S31","S32",
+         "S21","S22","S24",
+         "S2")
+        
+
+temp <- koo[,which(names(koo) %in% var)]
+
+temp %>% glimpse
+temp %>% head
+```  
+
+분석에 필요한 변수들만 선택하였다.  
+
+|Variable|Description       |
+|:------:|:----------------:|
+|HPID    |가구원식별번호    |
+|S2      |현재/과거 흡연량  |
+|S21     |평균 음주량       |
+|S22     |과음횟수(남녀합산)|
+|S24     |문제음주          |
+|S27     |격렬한 신체활동   |
+|S28     |격렬한 신체활동량 |
+|S29     |중증도 신체활동   |
+|S30     |중증도 신체활동량 |
+|S31     |걷기              |
+|S32     |걷기 지속시간     |  
+
+
+<br>
+<br>
+
+
+```{r}
+temp <- temp[temp$S28!=-1 & temp$S30!=-1 & temp$S32!=-1,]
+```  
+
+신체활동(만 18세 이상)조사에서 운동량 `해당사항 없음`에 대한 항목은 제외하고 연관규칙들을 살펴 보았다.  
+
+
+```{r}
+data <- 
+temp %>% transmute(
+  
+  ID = HPID,
+  
+  S27 = case_when(S27==1~"격렬한 운동 1일",
+                  S27==2~"격렬한 운동 2일",
+                  S27==3~"격렬한 운동 3일",
+                  S27==4~"격렬한 운동 4일",
+                  S27==5~"격렬한 운동 5일",
+                  S27==6~"격렬한 운동 6일",
+                  S27==7~"격렬한 운동 7일",
+                  S27==8~"격렬한 운동 전혀안함",
+                  S27==-9~"격렬한 운동 모름/무응답"),
+  
+  
+  S28 = case_when(S28==1~"격렬한 운동량 0~20분",
+                  S28==2~"격렬한 운동량 20~30분",
+                  S28==3~"격렬한 운동량 30~40분",
+                  S28==4~"격렬한 운동량 40~50분",
+                  S28==5~"격렬한 운동량 50~60분",
+                  S28==6~"격렬한 운동량 60분~",
+                  S28==-9~"격렬한 운동량 모름/무응답",
+                  S28==-1~"격렬한 운동량 해당사항 없음"),
+  
+  
+  S29 = case_when(S29==1~"중증도 운동 1일",
+                  S29==2~"중증도 운동 2일",
+                  S29==3~"중증도 운동 3일",
+                  S29==4~"중증도 운동 4일",
+                  S29==5~"중증도 운동 5일",
+                  S29==6~"중증도 운동 6일",
+                  S29==7~"중증도 운동 7일",
+                  S29==8~"중증도 운동 전혀안함",
+                  S29==-9~"중증도 운동 모름/무응답"),
+  
+  
+  S30 = case_when(S30==1~"중증도 운동량 0~20분",
+                  S30==2~"중증도 운동량 20~30분",
+                  S30==3~"중증도 운동량 30~40분",
+                  S30==4~"중증도 운동량 40~50분",
+                  S30==5~"중증도 운동량 50~60분",
+                  S30==6~"중증도 운동량 60분~",
+                  S30==-9~"중증도 운동량 모름/무응답",
+                  S30==-1~"중증도 운동량 해당사항 없음"),
+  
+  
+  S31 = case_when(S31==1~"걷기 운동 1일",
+                  S31==2~"걷기 운동 2일",
+                  S31==3~"걷기 운동 3일",
+                  S31==4~"걷기 운동 4일",
+                  S31==5~"걷기 운동 5일",
+                  S31==6~"걷기 운동 6일",
+                  S31==7~"걷기 운동 7일",
+                  S31==8~"걷기 운동 전혀안함",
+                  S31==-9~"걷기 운동 모름/무응답"),
+  
+  
+  S32 = case_when(S32==1~"걷기 운동량 0~20분",
+                  S32==2~"걷기 운동량 20~30분",
+                  S32==3~"걷기 운동량 30~40분",
+                  S32==4~"걷기 운동량 40~50분",
+                  S32==5~"걷기 운동량 50~60분",
+                  S32==6~"걷기 운동량 60분~",
+                  S32==-9~"걷기 운동량 모름/무응답",
+                  S32==-1~"걷기 운동량 해당사항 없음"),
+  
+  
+  S21 = case_when(S21==1~"평균 음주량 1~2잔",
+                  S21==2~"평균 음주량 3~4잔",
+                  S21==3~"평균 음주량 5~6잔",
+                  S21==4~"평균 음주량 7~9잔",
+                  S21==5~"평균 음주량 10잔~",
+                  S21==-9~"평균 음주량 모름/무응답",
+                  S21==-1~"평균 음주량 해당사항 없음"),
+  
+  
+  S22 = case_when(S22==1~"과음횟수 0번",
+                  S22==2~"과음횟수 월 1회 미만",
+                  S22==3~"과음횟수 월 1회",
+                  S22==4~"과음횟수 월 2~3회",
+                  S22==5~"과음횟수 주 1회",
+                  S22==6~"과음횟수 주 2~3회",
+                  S22==7~"과음횟수 거의매일",
+                  S22==-9~"과음횟수 모름/무응답",
+                  S22==-1~"과음횟수 해당사항 없음"),
+  
+  
+  S24 = case_when(S22==1~"문제음주 0번",
+                  S22==2~"문제음주 월 1회 미만",
+                  S22==3~"문제음주 월 1회",
+                  S22==4~"문제음주 월 2~3회",
+                  S22==5~"문제음주 주 1회",
+                  S22==6~"문제음주 주 2~3회",
+                  S22==7~"문제음주 거의매일",
+                  S22==-9~"문제음주 모름/무응답",
+                  S22==-1~"문제음주 해당사항 없음"),
+  
+  
+  S2 = case_when(S2==1~"현재 매일 피움",
+                 S2==2~"가끔 피움",
+                 S2==3~"과거에는 피웠으나 현재 피우지 않음",
+                 S2==4~"피운적 없음",
+                 S2==-9~"흡연량 모름/무응답",
+                 S2==-1~"흡연량 해당사항 없음")
+  
+  
+  
+  )
+```  
+
+연관 규칙을 실행하기에 앞서서, 숫자로 된 값들을 보기 편하도록 코딩해준다.  
+
+
+```{r}
+data_long <- data %>% gather(key="type", value="item",-1)
+
+data_long %>% head
+```  
+
+Market basket analysis를 위한 transcations class형태로 변환하기 위해서는 ID에 따른 item들을 long type으로 바꿔주어야 한다.  
+
+
+```{r}
+data_list <- split(data_long$item, data_long$ID)
+
+data_list %>% head
+```  
+
+item들을 ID에 따른 분리를 통해 list형태로 바꿔줄 수 있다. 위는 각 가구원 별 해당하는 설문 내용결과이다.  
+이제 `arules`패키지를 통해 transcations형태로 바꾸어 분석을 진행할 수 있다.  
+
+## Data Analysis
+
+```{r}
+data_trans <- as(data_list, "transactions")
+
+data_trans
+```  
+
+list형태의 Items의 데이터들을 transactions class로 변환하였다.  
+
+### Item information  
+
+```{r}
+data_trans@itemInfo$labels
+```  
+
+66개의 ID에 대한 설문응답의 Items이 존재한다. 위는 66개의 Items의 내용이다.  
+
+<br>
+<br>
+
+Apriori algorithm을 데이터에 적용하기 전에, 거래에 대해 조금 더 알기위해 visualization들을 해보자.  
+`itemFrequencyPlot()`는 item frequency bar plot을 만들어 상품들의 분포를 볼 수 있게 한다.  
+
+type을 absolute로 지정하면, 각 item들을 독립적인 갯수로 하여 plot을 보여준다.  
+type을 relative로 지정하면, 각 item들을 다른 것과 비교하여 나타낸 plot을 보여준다.  
+
+아래는 이들을 나타내고 있다.  
+
+
+### Absolute Item Frequency Plot  
+
+```{r}
+itemFrequencyPlot(data_trans, topN=15, type="absolute", col="wheat2",xlab="Item name", 
+                  ylab="Frequency (absolute)", main="Absolute Item Frequency Plot")
+```  
+
+### Relative Item Frequency Plot
+
+```{r}
+itemFrequencyPlot(data_trans, topN=15, type="relative", col="lightcyan2", xlab="Item name", 
+                  ylab="Frequency (relative)", main="Relative Item Frequency Plot")
+```  
+
+담배를 피운적이 없다는 item이 가장 많고, 격렬한 운동을 한 시간 이상 한다는 item 등 뒤따르는 모습이다.  
+상대적인 도수를 봐도 마찬가지이다.  
+
+
+## Apriori algorithm  
+
+연관 규칙을 만들기 위한 첫번째 단계는 support 와 confidence의 optimal thresholds를 결정하는 것이다.  
+만약 이 값들을 너무 낮게 선택하면, 알고리즘은 더 실행하는데 오래걸리고 많은 규칙들을 얻게된다.  
+
+그 다음, 어떤 값을 선택할 것인지 다른 support와 confidence에 대해서 시도하고 얼마나 많은 규칙들이 각 조합별로 생성되는지는 시각적으로 볼 수 있다.  
+
+
+
+### Choice of support and confidence  
+
+```{r}
+# Support and confidence values
+supportLevels <- c(0.1, 0.05, 0.01, 0.005)
+confidenceLevels <- c(0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1)
+
+# Empty integers 
+rules_sup10 <- rep(0,9)
+rules_sup5 <- rep(0,9)
+rules_sup1 <- rep(0,9)
+rules_sup0.5 <- rep(0,9)
+
+# Apriori algorithm with a support level of 10%
+for (i in 1:length(confidenceLevels)) {
+  
+  rules_sup10[i] <- length(apriori(data_trans, 
+                                   control = list(verbose=F),
+                                   parameter=list(sup=supportLevels[1], 
+                                   conf=confidenceLevels[i], 
+                                   target="rules"
+                                   )))
+  
+}
+
+# Apriori algorithm with a support level of 5%
+for (i in 1:length(confidenceLevels)){
+  
+  rules_sup5[i] <- length(apriori(data_trans, 
+                                  control = list(verbose=F),
+                                  parameter=list(sup=supportLevels[2], 
+                                  conf=confidenceLevels[i], 
+                                  target="rules")))
+  
+}
+
+# Apriori algorithm with a support level of 1%
+for (i in 1:length(confidenceLevels)){
+  
+  rules_sup1[i] <- length(apriori(data_trans, 
+                                  control = list(verbose=F),
+                                  parameter=list(sup=supportLevels[3], 
+                                  conf=confidenceLevels[i], 
+                                  target="rules")))
+  
+}
+
+# Apriori algorithm with a support level of 0.5%
+for (i in 1:length(confidenceLevels)){
+  
+  rules_sup0.5[i] <- length(apriori(data_trans, 
+                                    control = list(verbose=F),
+                                    parameter=list(sup=supportLevels[4], 
+                                    conf=confidenceLevels[i], 
+                                    target="rules")))
+  
+}
+```  
+
+다음 그래프는 support levels을 0.005, 0.001, 0.05, 0.1로 정했을 때, 생성되는 규칙 수를 나타낸다.  
+
+```{r}
+# Number of rules found with a support level of 10%
+p1 <- qplot(confidenceLevels, rules_sup10, geom=c("point", "line"), 
+            xlab="Confidence level", ylab="Number of rules found", 
+            main="Apriori with a support level of 10%") +
+  theme_bw()
+
+# Number of rules found with a support level of 5%
+p2 <- qplot(confidenceLevels, rules_sup5, geom=c("point", "line"), 
+            xlab="Confidence level", ylab="Number of rules found", 
+            main="Apriori with a support level of 5%") +   
+  
+  scale_y_continuous(breaks=seq(0, 20, 2)) +
+  theme_bw()
+
+# Number of rules found with a support level of 1%
+p3 <- qplot(confidenceLevels, rules_sup1, geom=c("point", "line"), 
+            xlab="Confidence level", ylab="Number of rules found",
+            main="Apriori with a support level of 1%") +
+  
+  scale_y_continuous(breaks=seq(0, 500, 50)) +
+  theme_bw()
+
+# Number of rules found with a support level of 0.5%
+p4 <- qplot(confidenceLevels, rules_sup0.5, geom=c("point", "line"), 
+            xlab="Confidence level", ylab="Number of rules found",
+            main="Apriori with a support level of 0.5%") +
+  
+  scale_y_continuous(breaks=seq(0, 2000, 200)) +
+  theme_bw()
+
+
+
+# Subplot
+p1+p2+p3+p4 + plot_layout(ncol=2)
+```  
+
+```{r}
+# Data frame
+num_rules <- data.frame(rules_sup10, rules_sup5, rules_sup1, rules_sup0.5, confidenceLevels)
+
+# Number of rules found with a support level of 10%, 5%, 1% and 0.5%
+ggplot(data=num_rules, aes(x=confidenceLevels)) +
+  
+  # Plot line and points (support level of 10%)
+  geom_line(aes(y=rules_sup10, colour="Support level of 10%")) + 
+  geom_point(aes(y=rules_sup10, colour="Support level of 10%")) +
+  
+  # Plot line and points (support level of 5%)
+  geom_line(aes(y=rules_sup5, colour="Support level of 5%")) +
+  geom_point(aes(y=rules_sup5, colour="Support level of 5%")) +
+  
+  # Plot line and points (support level of 1%)
+  geom_line(aes(y=rules_sup1, colour="Support level of 1%")) + 
+  geom_point(aes(y=rules_sup1, colour="Support level of 1%")) +
+  
+  # Plot line and points (support level of 0.5%)
+  geom_line(aes(y=rules_sup0.5, colour="Support level of 0.5%")) +
+  geom_point(aes(y=rules_sup0.5, colour="Support level of 0.5%")) +
+  
+  # Labs and theme
+  labs(x="Confidence levels", y="Number of rules found", 
+       title="Apriori algorithm with different support levels") +
+  
+  
+  scale_x_continuous(breaks=seq(0,1, 0.1)) +
+  scale_y_continuous(breaks=seq(0, 45000, 5000)) +
+  theme_bw() +
+  theme(legend.title=element_blank(),
+        legend.position = "bottom")
+```  
+
+결과를 분석해보면,  
+
+최소 지지도 수준이 10%일 때, 낮은 신뢰도 수준에 대해서 오직 몇 개의 규칙만 식별할 수 있는데,  
+이것은 연관이 있는 빈도의 규칙들이 없다는 것을 의미한다. 따라서, 이 값은 선택할 수 없다. 왜냐하면, 결과에 따른 규칙들이 데이터셋을 대표한다고 보기 힘들다.  
+
+최소 지지도 수준이 5%일 때, 최소 신뢰도 수준을 0.3~0.5정도로 설정하면 적당한 수십개의 규칙들을 가지게 된다.  
+
+최소 지지도 수준이 1%일 때, 최소 신뢰도 수준을 적어도0.9이상으로 설정하지 않으면 너무 많은 규칙들을 얻게된다.  
+
+최소 지지도 수준이 0.5%일 때, 분석하기에 너무 많은 규칙들이 존재한다.  
+
+<br>
+
+종합하자면, 최소 지지도를 5%(0.05)정도, 최소 신뢰도를 0.5정도로 설정하여 분석을 진행하자.  
+
+
+## Execution  
+
+```{r}
+options(digits=3) # 소수점 3째자리까지만 표현
+
+rule <- apriori(data_trans, 
+                control = list(verbos=F),
+                parameter = list(support=0.05,
+                                 conf =0.5,
+                                 target = "rules"))
+
+
+summary(rule)
+
+inspect(sort(rule, by = "support")[1:10])
+```  
+
+support기준으로 정렬을 하여 상위 10개의 규칙들을 열거하였다.  
+
+걷기 운동을 일주일에 7일 하는 사람들은 중증도 운동량이 60분 이상인 규칙이 존재하는데, 이는 바로 밑에 있는 중증도 운동량이 60분 이상인 사람들은 걷기 운동을 7일 하는 규칙과 동일하다.  
+즉, 중복된 규칙들이 몇몇 존재하여 이를 제거한 뒤, 다시 규칙들을 살펴보기로 하자.  
+
+
+### Delete the dupulicated rules  
+
+```{r}
+subset_matrix <- is.subset(rule, rule)
+```  
+
+434개의 규칙이 존재하는 rule변수에 대해 중복되는 규칙을 찾을 것이다.  
+434x434행렬이 규칙에 따라 형성될 것이다.  
+
+`is.subset()`은 subset인지 확인하는 것이다. 예컨대, 자신은 자신의 부분집합이므로 subset에 포함될 것이다.  
+
+* **|** : subset이 맞음  
+* **.** : subset이 아님  
+
+|과 .은 각각 1과 0을 의미한다.  
+
+
+
+```{r}
+diag(subset_matrix) <- F 
+redundant <- colSums(subset_matrix, na.rm = T) >= 1
+
+which(redundant) %>% head
+```  
+
+
+```{r}
+# 중복되는 규칙 삭제
+rule_pruned <- rule[!redundant]
+
+rule_pruned
+```  
+
+대각에 있는 원소는 자신이 자신의 부분집합이냐고 묻는 것이므로 우리가 원하는 의미있는 정보는 아니다. 따라서 대각원소들에 대해서는 False로 넣었다.  
+열 기준으로 summation을 했을 때, 0이 아닌 숫자가 존재한다는 것은 그 열에 대한 규칙은 어느 다른 규칙 한 가지 이상의 subset이라는 것을 의미한다. 따라서 중복컬럼들을 제외하고 다시 규칙을 살펴보기로 한다.  
+
+### Association rules  
+
+```{r}
+inspect(sort(rule_pruned, by = "lift"))
+```  
+
+중복된 규칙을 제외한 컬럼들에 대해서 lift를 기준으로 정렬하여 rules을 살펴보자.  
+
+1  
+
+* 격렬한 운동을 20~30분, 중증도 운동량이 20~30분을 동시에 선택한 비율은 0.0785이다.  
+* 격렬한 운동을 20~30분을 한 사람들 중 0.587은 중증도 운동량을 20~30분을 같이했다. 이 규칙은 lift>>1이므로 의미가 매우있는 규칙이라고 할 수 있다.  
+
+
+8  
+
+* 평균 음주량이 3~4잔, 과음횟수가 0번을 동시에 선택한 비율은 0.0984이다.  
+* 평균 음주량이 3~4잔인 사람들 중 0.588(58.8%)은 과음횟수가 0번이다. lift=1.88이므로 의미가 있는 규칙이다.  
+
+
+15, 16 or 19  
+
+* 과음횟수에 해당이 없거나(과음을 하지 않는 사람들), 평균 음주량에 해당이 없는 사람들(음주를 하지 않는 사람들)은 중증도 또는 격렬한 운동을 한 시간 이상 하는 경향이 있다.  
+
+
+23  
+
+* 평균음주량이 10잔 이상인 사람들 중 52.4%는 격렬한 운동을 하는 것으로 나타났는데 lift가 거의 1이므로 의미가 없는 규칙이다.  
+
+
+
+
+
+### Visualization  
+
+#### Scatter plot  
+
+```{r}
+
+plot(rule_pruned, measure=c("support", "lift"), shading="confidence")
+
+
+# interactive
+# 선택된 규칙을 조사(inspect), 줌인(줌아웃), 규칙 필터링(color key에서 절단값 클릭)
+
+# plot(rules.sorted, measure=c("support", "lift"), shading="confidence", interactive=TRUE) 
+```  
+
+규칙별 support, confidence, lift에 대한 산점도를 확인할 수 있다.  
+interactive plot을 이용하면 더 편리하다.  
+
+#### Graph  
+
+```{r}
+# Graph (default layout)
+plot(rule_pruned, method="graph")
+```  
+
+```{r}
+# Graph (circular layout)
+plot(rule_pruned, method="graph", control=list(layout=igraph::in_circle()))
+```  
+
+confidence를 확인할 수 없다는 단점이 있고, 복잡해질수록 이해하기 어렵다.  
+
+
+
+#### Grouped matrix plot  
+
+```{r}
+# Grouped matrix plot
+plot(rule_pruned, method="grouped")
+```  
+
+graph와 마찬가지로, confidence가 빠져있다.  
+그래도 이해하기는 상대적으로 편하게 되어있다.  
+
+#### Parallel coordinates plot  
+
+```{r}
+# Parallel coordinates plot
+plot(rule_pruned, method="paracoord", control=list(reorder=TRUE))
+```  
+
+x축의 1의 표시는 LHS를 의미하고, 화살표가 가리키는 RHS는 y축을 읽으면 된다.  
+이것도 복잡해지면 선이 겹치는 등 이해하기 어려울 것으로 보인다.  
+
+
+```{r}
+# Matrix plot
+plot(rule_pruned, method="matrix", measure="lift")
+```  
+
+
+LHS와 RHS의 숫자에 대한 설명이 나와있고 이에 대한 Matrix를 읽으면 되는 형식이다.  
+1->4 2->4가 가장 의미있는 규칙으로 보인다.  
+lift만 가지고 표현되고 있다.  
+
+
+## Conclusion  
+
+격렬한 운동을 하는 사람일수록, 걷기와 중증도 운동량은 자연스럽게 따라 채워지는 경향이 있었다. 격렬한 운동을 일주일 내내 한다면 걷기는 60분 이상 하는 경향이 있고, 중증도 운동량도 60분을 넘겼다. 평균 음주량이 적을수록 과음은 하지않았으며, 음주를 하지 않는 사람일수록 운동을 더 열심히 하는 경향이 있는 규칙으로 확인되었다.  
+
