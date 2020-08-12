@@ -91,8 +91,14 @@ Sys.setenv(RETICULATE_PYTHON = "C:/Users/koojaekwan/anaconda3/envs/r-tensorflow"
 
 use_condaenv는 둘 중 아래것만 써도 되는것 같다.  
 
+```{r eval=FALSE}
+install_tensorflow()
+install_keras()
+```  
 
-### reference  
+
+
+### installation reference  
 
 https://stackoverflow.com/questions/20337202/using-python-virtual-env-in-r  
 
