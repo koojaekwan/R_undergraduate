@@ -111,6 +111,12 @@ https://stackoverflow.com/questions/24283171/virtual-environment-in-r
 
 https://tensorflow.rstudio.com/installation/custom/  
 
+https://tensorflow.rstudio.com/reference/keras/install_keras/  
+
+https://docs.anaconda.com/anaconda/user-guide/tasks/using-r-language/  
+
+https://stackoverflow.com/questions/44025728/r-tensorflow-anaconda-install-on-windows  
+
 
 ## Example : MNIST  
 
