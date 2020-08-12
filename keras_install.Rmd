@@ -1,0 +1,161 @@
+---
+title: "Installation the Tensorflow & Keras in R"
+author: "Jae Kwan Koo"
+output:
+  html_document:
+    fig_height: 6
+    fig_width: 10
+    highlight: textmate
+    theme: united
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+    df_print: paged
+  word_document: default
+  github_document:
+    toc: yes
+    toc_depth: 4
+---  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T, fig.align = "center", message=F, warning=F, fig.height = 5, cache=F, dpi = 300, dev = "png")
+```  
+
+## ANACONDA  
+
+python을 기반으로 구동되기 때문에 기본적으로 anaconda를 설치하면 r에서 tensorflow와 keras를 설치할 수 있다고 한다.  
+
+하지만, 나의 경우에는 이런 메시지가 뜨면서 되지가 않았다.  
+며칠동안 검색해서 해결해보려고 했는데 똥손이라 어쩔 수 없는거 같다.  
+
+![](D:/Jae Kwan/프로그래밍 공부/케라스설치R/image/error_image.png)  
+
+<br>
+
+anconda설치 후, tensorflow와 keras를 설치해서 되는지 확인해보자.  
+
+### First trial  
+
+```{r echo=T, eval=FALSE}
+devtools::install_github("rstudio/keras")
+devtools::install_github("rstudio/tensorflow")
+
+install_tensorflow()
+install_keras()
+```  
+
+[rstudio/tensorflow 참조](https://github.com/rstudio/tensorflow)  
+[rstudio/keras 참조](https://github.com/rstudio/keras)  
+
+<br>
+<br>
+
+여기서 처음에 봤던 메시지가 뜨면서 안된다면 아래 방법을 이용하면 안정성있게 이용할 수 있다.  
+
+
+## conda env  
+
+
+r-tensorflow라는 가상환경을 conda를 통해 지정한다.(이름은 사실 아무거나 해도 상관없다.)  
+
+1. 윈도우버튼 누르고 cmd창을 켠다.  
+2. anaconda가 설치된 상황에서 **conda create -n r-tensorflow r-essentials r-base** 를 통해 r의 가상환경을 만들어준다.  
+3. 밑의 코드로 환경설정을 한다.  
+4. `install_tensorflow()`, `install_keras()`로 설치  
+
+
+주의할 점은 자신의 아나콘다가 설치된 경로와 가상환경이름을 사용해야한다.  
+
+
+### Library  
+
+```{r}
+library(keras)
+library(tensorflow)
+library(reticulate)
+```  
+
+### Set the environment  
+
+```{r}
+# set anaconda to tensorflow environment
+
+# reticulate::use_condaenv("C:/Users/koojaekwan/anaconda3/envs/r-tensorflow")
+
+use_condaenv(condaenv = "r-tensorflow", 
+             conda = "C:/Users/koojaekwan/anaconda3/envs/r-tensorflow/python.exe")
+
+
+Sys.setenv(RETICULATE_PYTHON = "C:/Users/koojaekwan/anaconda3/envs/r-tensorflow")
+```  
+
+use_condaenv는 둘 중 아래것만 써도 되는것 같다.  
+
+
+### reference  
+
+https://stackoverflow.com/questions/20337202/using-python-virtual-env-in-r  
+
+https://www.rdocumentation.org/packages/reticulate/versions/1.16/topics/use_python  
+
+https://stackoverflow.com/questions/50145643/unable-to-change-python-path-in-reticulate-r  
+
+https://stackoverflow.com/questions/24283171/virtual-environment-in-r  
+
+https://tensorflow.rstudio.com/installation/custom/  
+
+
+## Example : MNIST  
+
+```{r}
+mnist <- dataset_mnist()
+x_train <- mnist$train$x
+y_train <- mnist$train$y
+x_test <- mnist$test$x
+y_test <- mnist$test$y
+
+
+# reshape
+x_train <- array_reshape(x_train, c(nrow(x_train), 784))
+x_test <- array_reshape(x_test, c(nrow(x_test), 784))
+# rescale
+x_train <- x_train / 255
+x_test <- x_test / 255
+
+y_train <- to_categorical(y_train, 10)
+y_test <- to_categorical(y_test, 10)
+
+model <- keras_model_sequential() 
+model %>% 
+  layer_dense(units = 256, activation = 'relu', input_shape = c(784)) %>% 
+  layer_dropout(rate = 0.4) %>% 
+  layer_dense(units = 128, activation = 'relu') %>%
+  layer_dropout(rate = 0.3) %>%
+  layer_dense(units = 10, activation = 'softmax')
+
+summary(model)
+
+
+model %>% compile(
+  loss = "categorical_crossentropy",
+  optimizer = optimizer_rmsprop(),
+  metrics = c("accuracy")
+)
+
+history <- model %>% fit(
+  x_train, y_train, 
+  epochs = 20, batch_size = 128, 
+  validation_split = 0.2
+)
+
+plot(history)
+
+model %>% evaluate(x_test, y_test)
+
+model %>% predict_classes(x_test[1:10, ])
+```
+
+
+
+
+
