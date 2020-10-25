@@ -1,7 +1,14 @@
 ---
 title: "Installation the Tensorflow & Keras in R"
 author: "Jae Kwan Koo"
+date: 2020-10-25 16:00:00 +0900
+categories: [R Blog, R]
+tags: [Keras, Tensorflow]
 output:
+  github_document:
+    toc: yes
+    toc_depth: 4
+  word_document: default
   html_document:
     fig_height: 6
     fig_width: 10
@@ -11,10 +18,6 @@ output:
     toc_depth: 4
     toc_float: yes
     df_print: paged
-  word_document: default
-  github_document:
-    toc: yes
-    toc_depth: 4
 ---  
 
 ```{r setup, include=FALSE}
@@ -23,16 +26,15 @@ knitr::opts_chunk$set(echo=T, fig.align = "center", message=F, warning=F, fig.he
 
 ## ANACONDA  
 
-python을 기반으로 구동되기 때문에 기본적으로 anaconda를 설치하면 r에서 tensorflow와 keras를 설치할 수 있다고 한다.  
+Python을 기반으로 구동되기 때문에 기본적으로 anaconda를 설치하면 r에서 tensorflow와 keras를 설치할 수 있다고 한다.  
 
-하지만, 나의 경우에는 이런 메시지가 뜨면서 되지가 않았다.  
+하지만, 나의 경우에는 에러 메시지가 뜨면서 되지가 않았다.  
 며칠동안 검색해서 해결해보려고 했는데 똥손이라 어쩔 수 없는거 같다.  
 
-![](D:/Jae Kwan/프로그래밍 공부/케라스설치R/image/error_image.png)  
 
 <br>
 
-anconda설치 후, tensorflow와 keras를 설치해서 되는지 확인해보자.  
+먼저 anconda설치 후, tensorflow와 keras를 설치해서 되는지 확인해보자.  
 
 ### First trial  
 
@@ -56,7 +58,7 @@ install_keras()
 ## conda env  
 
 
-r-tensorflow라는 가상환경을 conda를 통해 지정한다.(이름은 사실 아무거나 해도 상관없다.)  
+먼저, r-tensorflow라는 가상환경을 conda를 통해 지정한다.(이름은 사실 아무거나 해도 상관없다.)  
 
 1. 윈도우버튼 누르고 cmd창을 켠다.  
 2. anaconda가 설치된 상황에서 **conda create -n r-tensorflow r-essentials r-base** 를 통해 r의 가상환경을 만들어준다.  
@@ -67,6 +69,7 @@ r-tensorflow라는 가상환경을 conda를 통해 지정한다.(이름은 사�
 주의할 점은 자신의 아나콘다가 설치된 경로와 가상환경이름을 사용해야한다.  
 또 중간에 에러가 생기면, 필요한 패키지들은 알아서 설치하도록 한다.  
 
+아래는 위의 번호에 해당하는 설치 과정을 나타낸다.  
 
 ### Library  
 
@@ -119,6 +122,8 @@ https://stackoverflow.com/questions/44025728/r-tensorflow-anaconda-install-on-wi
 
 
 ## Example : MNIST  
+
+잘 작동하는지도 확인해보자.  
 
 ```{r}
 mnist <- dataset_mnist()
